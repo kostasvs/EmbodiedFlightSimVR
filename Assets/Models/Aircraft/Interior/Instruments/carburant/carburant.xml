@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PropertyList>
+
+  <path>carburant.ac</path>
+  <animation>
+    <!-- object name in ac file -->
+    <object-name>carburant.knob</object-name>
+    <object-name>carburant.leftgauge</object-name>
+    <object-name>carburant.lefttank</object-name>
+    <object-name>carburant.low-lamp</object-name>
+    <object-name>carburant.low-lamp-off</object-name>
+    <object-name>carburant.low-lamp-off2</object-name>
+    <object-name>carburant.low-lamp2</object-name>
+    <object-name>carburant.middletank</object-name>
+    <object-name>carburant.num1-1</object-name>
+    <object-name>carburant.num1-2</object-name>
+    <object-name>carburant.num1-3</object-name>
+    <object-name>carburant.num1-4</object-name>
+    <object-name>carburant.num2-1</object-name>
+    <object-name>carburant.num2-2</object-name>
+    <object-name>carburant.num2-3</object-name>
+    <object-name>carburant.num2-4</object-name>
+    <object-name>carburant.num3-1</object-name>
+    <object-name>carburant.num3-2</object-name>
+    <object-name>carburant.num3-3</object-name>
+    <object-name>carburant.num3-4</object-name>
+    <object-name>carburant.rightgauge</object-name>
+    <object-name>carburant.righttank</object-name>
+    <object-name>carburant.texte</object-name>
+   <object-name>carburant.warningblancTL</object-name>
+    <object-name>carburant.warningblancBL</object-name>
+    <object-name>carburant.warningblancTR</object-name>
+    <object-name>carburant.warningblancBR</object-name>
+    <object-name>carburant.warningrougeTL</object-name>
+    <object-name>carburant.warningrougeBL</object-name>
+    <object-name>carburant.warningrougeTR</object-name>
+    <object-name>carburant.warningrougeBR</object-name>
+  </animation>
+
+  <animation>
+    <!-- lights : illuminations -->
+    <type>material</type>
+    <object-name>carburant.leftgauge</object-name>
+    <object-name>carburant.lefttank</object-name>
+    <object-name>carburant.middletank</object-name>
+    <object-name>carburant.num1-1</object-name>
+    <object-name>carburant.num1-2</object-name>
+    <object-name>carburant.num1-3</object-name>
+    <object-name>carburant.num1-4</object-name>
+    <object-name>carburant.num2-1</object-name>
+    <object-name>carburant.num2-2</object-name>
+    <object-name>carburant.num2-3</object-name>
+    <object-name>carburant.num2-4</object-name>
+    <object-name>carburant.num3-1</object-name>
+    <object-name>carburant.num3-2</object-name>
+    <object-name>carburant.num3-3</object-name>
+    <object-name>carburant.num3-4</object-name>
+    <object-name>carburant.rightgauge</object-name>
+    <object-name>carburant.righttank</object-name>
+    <object-name>carburant.texte</object-name>
+    <object-name>carburant.warningblancTL</object-name>
+    <object-name>carburant.warningblancBL</object-name>
+    <object-name>carburant.warningblancTR</object-name>
+    <object-name>carburant.warningblancBR</object-name>
+    <object-name>carburant.warningrougeTL</object-name>
+    <object-name>carburant.warningrougeBL</object-name>
+    <object-name>carburant.warningrougeTR</object-name>
+    <object-name>carburant.warningrougeBR</object-name>
+    <emission>
+      <factor-prop>/systems/electrical/outputs/instrument-lights</factor-prop>
+      <red>   0.1 </red>
+      <green> 0.5 </green>
+      <blue>  0.2 </blue>
+    </emission>
+  </animation>
+  <animation>
+    <!-- lights : flood -->
+    <type>material</type>
+    <object-name>carburant.knob</object-name>
+    <emission>
+      <factor-prop>/systems/electrical/outputs/instrument-lights</factor-prop>
+      <red>   0.012 </red>
+      <green> 0.06 </green>
+      <blue>  0.02 </blue>
+    </emission>
+  </animation>
+
+
+  <animation>
+    <type>material</type>
+    <object-name>carburant.low-lamp</object-name>
+    <object-name>carburant.low-lamp2</object-name>
+    <object-name>carburant.warningrougeL</object-name>
+    <object-name>carburant.warningrougeR</object-name>
+    <emission>
+      <red>   2 </red>
+      <green> 2 </green>
+      <blue>  2 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>carburant.low-lamp-off</object-name>
+    <object-name>carburant.low-lamp-off2</object-name>
+    <emission>
+      <red>   0 </red>
+      <green> 0 </green>
+      <blue>  0 </blue>
+    </emission>
+  </animation>
+
+  <!-- Internal Fuel in kg -->
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num1-1</object-name>
+    <property>/systems/fuel/internal-remaining-fuel</property>
+    <factor>0.0001</factor>
+    <step>1000</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num1-2</object-name>
+    <property>/systems/fuel/internal-remaining-fuel</property>
+    <factor>0.001</factor>
+    <step>100</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num1-3</object-name>
+    <property>/systems/fuel/internal-remaining-fuel</property>
+    <factor>0.01</factor>
+    <step>10</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num1-4</object-name>
+    <property>/systems/fuel/internal-remaining-fuel</property>
+    <factor>0.1</factor>
+    <step>1</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <!--     Remain fuel with external tanks-->
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num2-1</object-name>
+    <property>/consumables/fuel/total-fuel-kg</property>
+    <factor>0.0001</factor>
+    <step>1000</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num2-2</object-name>
+    <property>/consumables/fuel/total-fuel-kg</property>
+    <factor>0.001</factor>
+    <step>100</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num2-3</object-name>
+    <property>/consumables/fuel/total-fuel-kg</property>
+    <factor>0.01</factor>
+    <step>10</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num2-4</object-name>
+    <property>/consumables/fuel/total-fuel-kg</property>
+    <factor>0.1</factor>
+    <step>1</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <!--     Bingo fuel -->
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num3-1</object-name>
+    <property>/instrumentation/consumables/bingo_fuel</property>
+    <factor>0.0001</factor>
+    <step>1000</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num3-2</object-name>
+    <property>/instrumentation/consumables/bingo_fuel</property>
+    <factor>0.001</factor>
+    <step>100</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num3-3</object-name>
+    <property>/instrumentation/consumables/bingo_fuel</property>
+    <factor>0.01</factor>
+    <step>10</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.num3-4</object-name>
+    <property>/instrumentation/consumables/bingo_fuel</property>
+    <factor>0.1</factor>
+    <step>1</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+      <z>0</z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.lefttank</object-name>
+    <condition>
+      <or>
+        <not><property>/consumables/fuel/tank[10]/empty</property></not>
+        <not><property>/consumables/fuel/tank[12]/empty</property></not>
+      </or>
+      <value>true</value>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.middletank</object-name>
+    <condition>
+      <not><property>/consumables/fuel/tank[8]/empty</property></not>
+      <value>true</value>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.righttank</object-name>
+    <condition>
+      <or>
+        <not><property>/consumables/fuel/tank[9]/empty</property></not>
+        <not><property>/consumables/fuel/tank[11]/empty</property></not>
+      </or>
+      <value>true</value>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningblancTL</object-name>
+    <condition>
+      <or>
+        <not><property>/consumables/fuel/tank[6]/empty</property></not>
+        <equals>
+          <property>instrumentation/consumables/bingo_low</property>
+          <value>0</value>
+        </equals>
+      </or>
+      <value>true</value>
+    </condition>
+  </animation>
+  
+  
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningblancBL</object-name>
+    <condition>
+      <or>
+        <not><property>/consumables/fuel/tank[7]/empty</property></not>
+        <equals>
+          <property>instrumentation/consumables/bingo_low</property>
+          <value>0</value>
+        </equals>
+      </or>
+      <value>true</value>
+    </condition>
+  </animation>
+  
+  
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningblancTR</object-name>
+    <condition>
+      <or>
+        <not><property>/consumables/fuel/tank[1]/empty</property></not>
+      </or>
+      <value>true</value>
+    </condition>
+  </animation>
+  
+  
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningblancBR</object-name>
+    <condition>
+        <not><property>/consumables/fuel/tank[2]/empty</property></not>
+      <value>true</value>
+    </condition>
+  </animation>
+  
+  
+  
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.leftgauge</object-name>
+    <property>/systems/fuel/left-remaining-fuel</property>
+    <factor>0.000322</factor>
+    <step>0.001</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>carburant.rightgauge</object-name>
+    <property>/systems/fuel/left-remaining-fuel</property>
+    <factor>0.000322</factor>
+    <step>0.001</step>
+    <axis>
+      <x>0</x>
+      <y>1</y>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningblancTL</object-name>
+    <object-name>carburant.warningblancBL</object-name>
+    <object-name>carburant.warningblancTR</object-name>
+    <object-name>carburant.warningblancBR</object-name>
+    <condition>
+      <equals>
+        <property>instrumentation/consumables/bingo_low</property>
+        <value>0</value>
+      </equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>carburant.warningrougeTL</object-name>
+    <object-name>carburant.warningrougeBL</object-name>
+    <object-name>carburant.warningrougeTR</object-name>
+    <object-name>carburant.warningrougeBR</object-name>
+    <condition>
+      <equals>
+        <property>/instrumentation/consumables/bingo_low</property>
+        <value>1</value>
+      </equals>
+    </condition>
+  </animation>
+
+  <!-- low fuel warning -->
+  <!-- Below 100 kg -->
+  <animation>
+    <type>select</type>
+    <object-name>carburant.low-lamp</object-name>
+    <condition>
+      <less-than>
+        <property>/consumables/fuel/total-fuel-kg</property>
+        <value>100</value>
+      </less-than>
+    </condition>
+  </animation>
+
+  <!-- Above 100 kg -->
+  <animation>
+    <type>select</type>
+    <object-name>carburant.low-lamp-off</object-name>
+    <condition>
+      <greater-than>
+        <property>/consumables/fuel/total-fuel-kg</property>
+        <value>100.001</value>
+      </greater-than>
+    </condition>
+  </animation>
+
+  <!-- Temporarly same as previous -->
+  <animation>
+    <type>select</type>
+    <object-name>carburant.low-lamp2</object-name>
+    <condition>
+      <less-than>
+        <property>/consumables/fuel/total-fuel-kg</property>
+        <value>100</value>
+      </less-than>
+    </condition>
+  </animation>
+
+  <!-- Above 100 kg -->
+  <animation>
+    <type>select</type>
+    <object-name>carburant.low-lamp-off2</object-name>
+    <condition>
+      <greater-than>
+        <property>/consumables/fuel/total-fuel-kg</property>
+        <value>100.001</value>
+      </greater-than>
+    </condition>
+  </animation>
+
+  <!--
+================================================================================
+                                                                        TEXT OSG
+================================================================================
+  -->
+  <text>
+    <name>carburant.textosg</name>
+    <type type="string">literal</type>
+    <text type="string">Fuel</text>
+    <draw-text type="bool">true</draw-text>
+    <font>Helvetica.txf</font>
+    <character-size type="double">0.016</character-size>
+    <character-aspect-ratio type="double">1.0</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.06</max-height>
+    <max-width>0.08</max-width>
+    <font-resolution>
+      <width type="int">64</width>
+      <height type="int">64</height>
+    </font-resolution>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m>-3.48</x-m>
+      <y-m>0.13</y-m>
+      <z-m>-0.45</z-m>
+    </offsets>
+  </text>
+
+  <animation>
+    <type>material</type>
+    <object-name>carburant.textosg</object-name>
+    <emission>
+      <red>1</red>
+      <green>0.2</green>
+      <blue>0.2</blue>
+    </emission>
+  </animation>
+  <animation>
+    <type>select</type>
+    <object-name>carburant.textosg</object-name>
+    <condition>
+      <property>sim/panel-hotspots</property>
+    </condition>
+  </animation>
+</PropertyList>
