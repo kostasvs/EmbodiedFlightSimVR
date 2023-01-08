@@ -126,15 +126,16 @@
 
 			CacheItem cachedItem = null;
 
+			/** DISABLED DUE TO MAJOR BUG WHEN LOADING FROM CACHE IN OCULUS **/
 			// go through existing caches and check if we already have the requested tile available
-			foreach (var cache in _caches)
-			{
-				cachedItem = cache.Get(tilesetId, tileId);
-				if (null != cachedItem)
-				{
-					break;
-				}
-			}
+			//foreach (var cache in _caches)
+			//{
+			//	cachedItem = cache.Get(tilesetId, tileId);
+			//	if (null != cachedItem)
+			//	{
+			//		break;
+			//	}
+			//}
 
 			var uriBuilder = new UriBuilder(uri);
 			if (!string.IsNullOrEmpty(_accessToken))
