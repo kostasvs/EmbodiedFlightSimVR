@@ -1258,6 +1258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 479471259}
+  - component: {fileID: 479471260}
   m_Layer: 0
   m_Name: Aircraft
   m_TagString: Untagged
@@ -1283,6 +1284,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -76, z: 0}
+--- !u!114 &479471260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479471258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61dcd53505c13c544ad237646733de26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraRig: {fileID: 188315682086433827}
+  addCameraPosInEditor: {x: 0, y: 1.14, z: 0}
+  maxAcceleration: 1
+  maxTurn: 90
+  frictionFactor: 0.99
+  turnLerpFactor: 0.05
+  minTurnSpeed: 10
+  maxTurnSpeed: 50
 --- !u!1001 &569232052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4344,6 +4365,7 @@ GameObject:
   - component: {fileID: 2062617980}
   - component: {fileID: 2062617982}
   - component: {fileID: 2062617981}
+  - component: {fileID: 2062617983}
   m_Layer: 0
   m_Name: Throttle
   m_TagString: Untagged
@@ -4467,6 +4489,18 @@ MonoBehaviour:
     MaxZ:
       Constrain: 1
       Value: 0.155
+--- !u!114 &2062617983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062617977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6500eba0045a994ab4671a3983c94f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2096176388
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4548,6 +4582,7 @@ GameObject:
   - component: {fileID: 3541749988295540136}
   - component: {fileID: 167855410109236237}
   - component: {fileID: 3106593525735108371}
+  - component: {fileID: 167855410109236238}
   m_Layer: 0
   m_Name: Stick
   m_TagString: Untagged
@@ -4569,6 +4604,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxAngle: 30
   resetSpeed: 500
+--- !u!114 &167855410109236238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167855410109236236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df10d60e3c87f284f919adb1f66a6aa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  invertHor: 0
+  invertVer: 1
 --- !u!1001 &188315682086301351
 PrefabInstance:
   m_ObjectHideFlags: 0
