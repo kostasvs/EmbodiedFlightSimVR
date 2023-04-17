@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<PropertyList>
+<comment>
+<![CDATA[
+Place this file in <FlightGearDirectory>/data/Protocol
+
+Usage:
+fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,5501,udp,ventouras --generic=socket,in,25,,5500,udp,ventouras
+]]>
+</comment>
+<generic>
+
+  <output>
+    <line_separator>newline</line_separator>
+    <var_separator>tab</var_separator>
+    <binary_mode>false</binary_mode>
+
+   <chunk>
+    <name>latitude (rad)</name>
+    <type>double</type>
+    <format>%.12f</format>
+    <node>/position/latitude-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>longitude (rad)</name>
+    <type>double</type>
+    <format>%.12f</format>
+    <node>/position/longitude-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>altitude (m)</name>
+    <type>double</type>
+    <format>%.3f</format>
+    <node>/position/altitude-ft</node>
+    <factor>0.3048</factor>                  <!-- feet to meter -->
+   </chunk>
+
+   <chunk>
+    <name>Velocity North ("vn" mps)</name>
+    <type>float</type>
+    <format>%.8f</format>
+    <node>/velocities/speed-north-fps</node>
+    <factor>0.3048</factor>                  <!-- fps to mps -->
+   </chunk>
+
+   <chunk>
+    <name>Velocity East ("ve" mps)</name>
+    <type>float</type>
+    <format>%.8f</format>
+    <node>/velocities/speed-east-fps</node>
+    <factor>0.3048</factor>                  <!-- fps to mps -->
+   </chunk>
+
+   <chunk>
+    <name>Velocity Down ("vd" mps)</name>
+    <type>float</type>
+    <format>%.8f</format>
+    <node>/velocities/speed-down-fps</node>
+    <factor>0.3048</factor>                  <!-- fps to mps -->
+   </chunk>
+
+   <chunk>
+    <name>yaw angle (rad)</name>
+    <type>float</type>
+    <format>%.5f</format>
+    <node>/orientation/heading-deg</node>
+    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
+   </chunk>
+
+   <chunk>
+    <name>pitch angle (rad)</name>
+    <type>float</type>
+    <format>%.5f</format>
+    <node>/orientation/pitch-deg</node>
+    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
+   </chunk>
+
+   <chunk>
+    <name>roll angle (rad)</name>
+    <type>float</type>
+    <format>%.5f</format>
+    <node>/orientation/roll-deg</node>
+    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
+   </chunk>
+
+  </output>
+
+  <input>
+    <line_separator>newline</line_separator>
+    <var_separator>tab</var_separator>
+
+    <chunk>
+      <name>aileron</name>
+      <type>float</type>
+      <format>%.3f</format>
+      <node>/controls/flight/aileron</node>
+    </chunk>
+
+    <chunk>
+      <name>elevator</name>
+      <type>float</type>
+      <format>%.3f</format>
+      <node>/controls/flight/elevator</node>
+    </chunk>
+
+    <chunk>
+      <name>throttle</name>
+      <type>float</type>
+      <format>%.3f</format>
+      <node>/controls/engines/engine[0]/throttle</node>
+    </chunk>
+
+    <chunk>
+      <name>rudder</name>
+      <type>float</type>
+      <format>%.3f</format>
+      <node>/controls/flight/rudder</node>
+    </chunk>
+
+  </input>
+
+</generic>
+
+</PropertyList>
