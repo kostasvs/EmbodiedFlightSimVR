@@ -16,16 +16,16 @@ fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,55
     <binary_mode>false</binary_mode>
 
    <chunk>
-    <name>latitude (rad)</name>
+    <name>latitude (deg)</name>
     <type>double</type>
-    <format>%.12f</format>
+    <format>%.6f</format>
     <node>/position/latitude-deg</node>
    </chunk>
 
    <chunk>
-    <name>longitude (rad)</name>
+    <name>longitude (deg)</name>
     <type>double</type>
-    <format>%.12f</format>
+    <format>%.6f</format>
     <node>/position/longitude-deg</node>
    </chunk>
 
@@ -40,7 +40,7 @@ fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,55
    <chunk>
     <name>Velocity North ("vn" mps)</name>
     <type>float</type>
-    <format>%.8f</format>
+    <format>%.3f</format>
     <node>/velocities/speed-north-fps</node>
     <factor>0.3048</factor>                  <!-- fps to mps -->
    </chunk>
@@ -48,7 +48,7 @@ fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,55
    <chunk>
     <name>Velocity East ("ve" mps)</name>
     <type>float</type>
-    <format>%.8f</format>
+    <format>%.3f</format>
     <node>/velocities/speed-east-fps</node>
     <factor>0.3048</factor>                  <!-- fps to mps -->
    </chunk>
@@ -56,33 +56,58 @@ fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,55
    <chunk>
     <name>Velocity Down ("vd" mps)</name>
     <type>float</type>
-    <format>%.8f</format>
+    <format>%.3f</format>
     <node>/velocities/speed-down-fps</node>
     <factor>0.3048</factor>                  <!-- fps to mps -->
    </chunk>
 
    <chunk>
-    <name>yaw angle (rad)</name>
+    <name>yaw angle (deg)</name>
     <type>float</type>
-    <format>%.5f</format>
+    <format>%.2f</format>
     <node>/orientation/heading-deg</node>
-    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
    </chunk>
 
    <chunk>
-    <name>pitch angle (rad)</name>
+    <name>pitch angle (deg)</name>
     <type>float</type>
-    <format>%.5f</format>
+    <format>%.2f</format>
     <node>/orientation/pitch-deg</node>
-    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
    </chunk>
 
    <chunk>
-    <name>roll angle (rad)</name>
+    <name>roll angle (deg)</name>
     <type>float</type>
-    <format>%.5f</format>
+    <format>%.2f</format>
     <node>/orientation/roll-deg</node>
-    <factor>0.01745329251994329576</factor>  <!-- degrees to radians -->
+   </chunk>
+
+   <chunk>
+    <name>yaw rate (degps)</name>
+    <type>float</type>
+    <format>%.3f</format>
+    <node>/orientation/roll-rate-degps</node>
+   </chunk>
+
+   <chunk>
+    <name>pitch rate (degps)</name>
+    <type>float</type>
+    <format>%.3f</format>
+    <node>/orientation/pitch-rate-degps</node>
+   </chunk>
+
+   <chunk>
+    <name>roll rate (degps)</name>
+    <type>float</type>
+    <format>%.3f</format>
+    <node>/orientation/roll-rate-degps</node>
+   </chunk>
+
+   <chunk>
+    <name>time</name>
+    <type>double</type>
+    <format>%.3f</format>
+    <node>/sim/time/steady-clock-sec</node>
    </chunk>
 
   </output>

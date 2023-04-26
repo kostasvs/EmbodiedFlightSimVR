@@ -20,13 +20,19 @@ namespace Assets.Scripts {
 		Socket socket;
 		IPEndPoint targetEndpoint;
 
+		private string receivedData = null;
+
 		[SerializeField]
 		private StickControl stickControl;
 
 		[SerializeField]
 		private ThrottleControl throttleControl;
 
+		private GeoPositioning geo;
+
 		void Start () {
+			geo = GetComponent<GeoPositioning> ();
+
 			listener = new UdpClient (portToReceive);
 			groupEP = new IPEndPoint (IPAddress.Any, portToReceive);
 			var thread = new Thread (Receive);
@@ -44,13 +50,19 @@ namespace Assets.Scripts {
 			socket.Close ();
 		}
 
+		private void Update () {
+			if (receivedData != null) {
+				InterpretMessage (receivedData.Split ('\t'));
+				receivedData = null;
+			}
+		}
 		private void Receive () {
 			try {
 				while (true) {
 					byte[] bytes = listener.Receive (ref groupEP);
 					var readout = Encoding.ASCII.GetString (bytes, 0, bytes.Length);
 					if (!string.IsNullOrEmpty (readout)) {
-						InterpretMessage (readout.Split ('\t'));
+						receivedData = readout;
 					}
 				}
 			}
@@ -61,14 +73,29 @@ namespace Assets.Scripts {
 
 		private void Send () {
 			string msg = FormulateMessage ();
-			Debug.Log (msg);
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
 			socket.SendTo (sendbuf, targetEndpoint);
 		}
 
 		private void InterpretMessage (string[] parts) {
 			if (parts.Length == 0) return;
-			// TODO: apply incoming values
+
+			if (double.TryParse (parts[0], out var lat) &&
+				double.TryParse (parts[1], out var lon) &&
+				double.TryParse (parts[2], out var altitude) &&
+				float.TryParse (parts[3], out var vn) &&
+				float.TryParse (parts[4], out var ve) &&
+				float.TryParse (parts[5], out var vd) &&
+				float.TryParse (parts[6], out var yaw) &&
+				float.TryParse (parts[7], out var pitch) &&
+				float.TryParse (parts[8], out var roll) &&
+				float.TryParse (parts[9], out var yawRate) &&
+				float.TryParse (parts[10], out var pitchRate) &&
+				float.TryParse (parts[11], out var rollRate) &&
+				double.TryParse (parts[12], out var simTime)) {
+
+				geo.UpdateData (lat, lon, altitude, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime);
+			}
 		}
 
 		private string FormulateMessage () {

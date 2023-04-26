@@ -8,6 +8,7 @@ namespace Assets.Scripts {
 		private float maxZ;
 
 		private void Start () {
+			Output = 0f;
 			var tr = GetComponent<OneGrabTranslateTransformer> ();
 			if (tr) maxZ = tr.Constraints.MaxZ.Value;
 		}
