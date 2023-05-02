@@ -94,7 +94,7 @@ namespace Assets.Scripts {
 				float.TryParse (parts[11], out var rollRate) &&
 				double.TryParse (parts[12], out var simTime)) {
 
-				geo.UpdateData (lat, lon, altitude, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime);
+				geo.AddSnapshot (lat, lon, altitude, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime);
 			}
 		}
 
