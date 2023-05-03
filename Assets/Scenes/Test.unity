@@ -2972,8 +2972,7 @@ MonoBehaviour:
   portToSend: 5500
   portToReceive: 5501
   sendRate: 0.04
-  stickControl: {fileID: 167855410109236238}
-  throttleControl: {fileID: 2062617983}
+  controls: {fileID: 479471260}
 --- !u!4 &1499567966
 Transform:
   m_ObjectHideFlags: 0

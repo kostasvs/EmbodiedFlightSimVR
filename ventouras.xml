@@ -144,6 +144,12 @@ fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,55
       <node>/controls/flight/rudder</node>
     </chunk>
 
+    <chunk>
+      <name>gear-down</name>
+      <type>bool</type>
+      <node>/controls/gear/gear-down</node>
+    </chunk>
+
   </input>
 
 </generic>

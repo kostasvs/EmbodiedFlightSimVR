@@ -23,10 +23,7 @@ namespace Assets.Scripts {
 		private string receivedData = null;
 
 		[SerializeField]
-		private StickControl stickControl;
-
-		[SerializeField]
-		private ThrottleControl throttleControl;
+		private FlightControls controls;
 
 		private GeoPositioning geo;
 
@@ -56,6 +53,7 @@ namespace Assets.Scripts {
 				receivedData = null;
 			}
 		}
+
 		private void Receive () {
 			try {
 				while (true) {
@@ -73,6 +71,7 @@ namespace Assets.Scripts {
 
 		private void Send () {
 			string msg = FormulateMessage ();
+			Debug.Log (msg);
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
 			socket.SendTo (sendbuf, targetEndpoint);
 		}
@@ -99,11 +98,12 @@ namespace Assets.Scripts {
 		}
 
 		private string FormulateMessage () {
-			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\n",
-				stickControl.Output.x,
-				stickControl.Output.y,
-				throttleControl.Output,
-				0f);
+			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\n",
+				controls.Stick.Output.x,
+				controls.Stick.Output.y,
+				controls.Throttle.Output,
+				0f, // rudder
+				controls.GearDown ? 1 : 0);
 		}
 	}
 }
