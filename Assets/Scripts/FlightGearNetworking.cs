@@ -18,14 +18,22 @@ namespace Assets.Scripts {
 		IPEndPoint groupEP;
 
 		Socket socket;
-		IPEndPoint targetEndpoint;
+		IPEndPoint targetEndpoint = null;
+		IPAddress lastReceivedAddress = null;
 
 		private string receivedData = null;
+		private bool hasReceivedAnyData = false;
+		private bool hasReceivedValidData = false;
 
 		[SerializeField]
 		private FlightControls controls;
 
 		private GeoPositioning geo;
+
+		public ushort PortToReceive => portToReceive;
+
+		public bool HasReceivedAnyData => hasReceivedAnyData;
+		public bool HasReceivedValidData => hasReceivedValidData;
 
 		void Start () {
 			geo = GetComponent<GeoPositioning> ();
@@ -36,8 +44,6 @@ namespace Assets.Scripts {
 			thread.Start ();
 
 			socket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			var targetAddress = IPAddress.Parse ("127.0.0.1");
-			targetEndpoint = new IPEndPoint (targetAddress, portToSend);
 
 			InvokeRepeating (nameof (Send), 0f, sendRate);
 		}
@@ -49,6 +55,7 @@ namespace Assets.Scripts {
 
 		private void Update () {
 			if (receivedData != null) {
+				hasReceivedAnyData = true;
 				InterpretMessage (receivedData.Split ('\t'));
 				receivedData = null;
 			}
@@ -61,6 +68,11 @@ namespace Assets.Scripts {
 					var readout = Encoding.ASCII.GetString (bytes, 0, bytes.Length);
 					if (!string.IsNullOrEmpty (readout)) {
 						receivedData = readout;
+						if (lastReceivedAddress == null) {
+							lastReceivedAddress = groupEP.Address;
+							Debug.Log ("Begin sending data to " + lastReceivedAddress.ToString ());
+							targetEndpoint = new IPEndPoint (lastReceivedAddress, portToSend);
+						}
 					}
 				}
 			}
@@ -70,8 +82,9 @@ namespace Assets.Scripts {
 		}
 
 		private void Send () {
+			if (targetEndpoint == null) return;
+
 			string msg = FormulateMessage ();
-			Debug.Log (msg);
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
 			socket.SendTo (sendbuf, targetEndpoint);
 		}
@@ -93,6 +106,7 @@ namespace Assets.Scripts {
 				float.TryParse (parts[11], out var rollRate) &&
 				double.TryParse (parts[12], out var simTime)) {
 
+				hasReceivedValidData = true;
 				geo.AddSnapshot (lat, lon, altitude, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime);
 			}
 		}
