@@ -95,7 +95,8 @@ namespace Assets.Scripts {
 			if (snapshots.Count > 100) Debug.LogWarning("too many snapshots being preserved: " +  snapshots.Count);
 
 			// add snapshot with new info
-			snapshots.Add (new Snapshot (lat, lon, alt, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime));
+			var attitude = Quaternion.Euler (-pitch, yaw, -roll);
+			snapshots.Add (new Snapshot (lat, lon, alt, vn, ve, vd, attitude, yawRate, pitchRate, rollRate, simTime));
 
 			// initialize map if this is first received info
 			var map = maps[visibleMapIndex];
@@ -180,7 +181,7 @@ namespace Assets.Scripts {
 			pos.y = alt;
 
 			// rotation
-			var rot = Quaternion.Euler (-result.pitch, result.yaw, -result.roll);
+			var rot = result.attitude;
 
 			// extrapolate if needed
 			var velocity = new Vector3 (result.ve, -result.vd, result.vn);
@@ -248,12 +249,11 @@ namespace Assets.Scripts {
 				s1.vn + (s2.vn - s1.vn) * alpha,
 				s1.ve + (s2.ve - s1.ve) * alpha,
 				s1.vd + (s2.vd - s1.vd) * alpha,
-				s1.yaw + (s2.yaw - s1.yaw) * alpha,
-				s1.pitch + (s2.pitch - s1.pitch) * alpha,
-				s1.roll + (s2.roll - s1.roll) * alpha,
-				s1.yawRate + (s2.yawRate - s1.yawRate) * alpha,
-				s1.pitchRate + (s2.pitchRate - s1.pitchRate) * alpha,
-				s1.rollRate + (s2.rollRate - s1.rollRate) * alpha,
+				Quaternion.Slerp (s1.attitude, s2.attitude, alpha),
+				// don't interpolate spin rates as there may be edge cases with 360-to-0 wrap
+				s1.yawRate,
+				s1.pitchRate,
+				s1.rollRate,
 				simTime);
 		}
 	}
@@ -265,9 +265,7 @@ namespace Assets.Scripts {
 		public float vn;
 		public float ve;
 		public float vd;
-		public float yaw;
-		public float pitch;
-		public float roll;
+		public Quaternion attitude;
 		public float yawRate;
 		public float pitchRate;
 		public float rollRate;
@@ -275,7 +273,7 @@ namespace Assets.Scripts {
 
 		public Snapshot (double lat, double lon, double alt,
 			float vn, float ve, float vd,
-			float yaw, float pitch, float roll,
+			Quaternion attitude,
 			float yawRate, float pitchRate, float rollRate,
 			double simTime) {
 			this.lat = lat;
@@ -284,9 +282,7 @@ namespace Assets.Scripts {
 			this.vn = vn;
 			this.ve = ve;
 			this.vd = vd;
-			this.yaw = yaw;
-			this.pitch = pitch;
-			this.roll = roll;
+			this.attitude = attitude;
 			this.yawRate = yawRate;
 			this.pitchRate = pitchRate;
 			this.rollRate = rollRate;
