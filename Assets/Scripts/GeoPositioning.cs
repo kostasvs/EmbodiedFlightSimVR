@@ -7,17 +7,26 @@ namespace Assets.Scripts {
 	public class GeoPositioning : MonoBehaviour {
 
 		[SerializeField]
-		private AbstractMap map;
+		private AbstractMap[] maps = new AbstractMap[2];
+		private int visibleMapIndex;
 		private Vector3 mapInitScale;
+
+		private const float secondaryMapSinkBase = 10f;
+		private const float secondaryMapSinkFactor = .1f;
+		private const float secondaryMapHideDelay = 3f;
+		private float secondaryMapHideTimer;
 
 		const float horizontalRefreshThreshold = 500;
 		const float horizontalRefreshThresholdAltitudeFactor = 1f;
 
-		const int minZoom = 6;
-		const int maxZoom = 15;
-		const int zoomStep = 3;
-		const int minZoomAltitude = 2000;
-		const int maxZoomAltitude = 0;
+		private readonly Dictionary<float, int> altitudeZooms = new Dictionary<float, int> () {
+			{ 0, 15 },
+			{ 400, 12 },
+			{ 2000, 9 },
+			{ 4000, 7 },
+		};
+		private float lastZoomChangeAlt;
+		const int minZoomChangeAltDelta = 200;
 
 		[SerializeField]
 		private Transform aircraftTransform;
@@ -32,11 +41,34 @@ namespace Assets.Scripts {
 		private const int maxDesyncCounts = 3;
 
 		void Start () {
-			mapInitScale = map.transform.localScale;
+			if (maps.Length != 2 || !maps[0] || !maps[1]) {
+				Debug.LogWarning ("invalid maps, disabling component");
+				enabled = false;
+				return;
+			}
+			if (maps[0].enabled || maps[1].enabled) {
+				Debug.LogWarning ("maps should initially be disabled");
+			}
+			if (maps[1].gameObject.activeSelf) {
+				Debug.LogWarning ("second map gameobject should initially be deactivated");
+			}
+			mapInitScale = maps[0].transform.localScale;
 		}
 
 		void Update () {
 			ApplyTimeDataOnTransform (aircraftTransform);
+			if (secondaryMapHideTimer > 0) {
+				secondaryMapHideTimer -= Time.deltaTime;
+				if (secondaryMapHideTimer <= 0) {
+					// hide previous map
+					maps[1 - visibleMapIndex].gameObject.SetActive (false);
+
+					// bring up current map
+					var pos = maps[visibleMapIndex].transform.position;
+					pos.y = 0f;
+					maps[visibleMapIndex].transform.position = pos;
+				}
+			}
 		}
 
 		public double GetCurSimTime () => Time.timeAsDouble + curSimTimeOffset;
@@ -60,11 +92,13 @@ namespace Assets.Scripts {
 				desyncCounts = 0;
 				RemoveStaleSnapshots ();
 			}
+			if (snapshots.Count > 100) Debug.LogWarning("too many snapshots being preserved: " +  snapshots.Count);
 
 			// add snapshot with new info
 			snapshots.Add (new Snapshot (lat, lon, alt, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime));
 
 			// initialize map if this is first received info
+			var map = maps[visibleMapIndex];
 			if (!map.enabled) {
 				var options = map.Options;
 				options.locationOptions.latitudeLongitude = string.Format ("{0:0.000000}, {1:0.000000}", lat, lon);
@@ -89,7 +123,8 @@ namespace Assets.Scripts {
 				return;
 			}
 
-			if (!map.enabled || snapshots.Count == 0) {
+			var curMap = maps[visibleMapIndex];
+			if (!curMap.enabled || snapshots.Count == 0) {
 				// skip until information received
 				return;
 			}
@@ -119,19 +154,28 @@ namespace Assets.Scripts {
 			else if (nearestAfter == -1) result = snapshots[nearestBefore];
 			else result = Lerp (snapshots[nearestBefore], snapshots[nearestAfter], GetCurSimTime ());
 
-			// apply map position/zoom
+			// apply map zoom
 			var alt = (float)result.alt;
-			var zoom = GetZoomForAltitude (alt);
+			if (Mathf.Abs (lastZoomChangeAlt - alt) > minZoomChangeAltDelta) {
+				var zoom = GetZoomForAltitude (alt);
+				if (zoom > 0 && zoom != Mathf.RoundToInt (curMap.Zoom)) {
+					lastZoomChangeAlt = alt;
+					SwapMapToZoom (zoom, alt);
+				}
+			}
+
+			// apply map position
 			var horThres = horizontalRefreshThreshold + horizontalRefreshThresholdAltitudeFactor * Mathf.Max (0, alt);
-
-			var pos = map.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
+			var pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
 			if (Mathf.Abs (pos.x) > horThres ||
-				Mathf.Abs (pos.z) > horThres ||
-				Mathf.RoundToInt (map.Zoom) != zoom) {
+				Mathf.Abs (pos.z) > horThres) {
 
-				map.UpdateMap (new Vector2d (result.lat, result.lon), zoom);
-				map.transform.localScale = mapInitScale;
-				pos = map.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
+				foreach (var map in maps) {
+					if (!map.enabled) continue;
+					map.UpdateMap (new Vector2d (result.lat, result.lon));
+					map.transform.localScale = mapInitScale;
+				}
+				pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
 			}
 			pos.y = alt;
 
@@ -150,8 +194,47 @@ namespace Assets.Scripts {
 		}
 
 		private int GetZoomForAltitude (float altitude) {
-			float lerp = Mathf.Clamp01 ((altitude - maxZoomAltitude) / (minZoomAltitude - maxZoomAltitude));
-			return Mathf.RoundToInt (Mathf.Lerp (maxZoom, minZoom, lerp) / zoomStep) * zoomStep;
+			float bestAlt = -1f;
+			int bestZoom = -1;
+			foreach (var pair in altitudeZooms) {
+				if (pair.Key > altitude) continue;
+				if (pair.Key > bestAlt || bestZoom == -1) {
+					bestAlt = pair.Key;
+					bestZoom = pair.Value;
+				}
+			}
+			return bestZoom;
+		}
+
+		private void SwapMapToZoom (int zoom, float alt) {
+			Debug.Log ("swap to zoom " + zoom);
+			var previousMap = maps[visibleMapIndex];
+			visibleMapIndex = 1 - visibleMapIndex;
+			var currentMap = maps[visibleMapIndex];
+
+			// sink current map depending on altitude
+			var pos = currentMap.transform.position;
+			pos.y = -secondaryMapSinkBase - secondaryMapSinkFactor * alt;
+			currentMap.transform.position = pos;
+
+			secondaryMapHideTimer = secondaryMapHideDelay;
+
+			// initialize current map using previous map location
+			if (!currentMap.enabled) {
+				var options = currentMap.Options;
+				options.locationOptions.latitudeLongitude = string.Format ("{0:0.000000}, {1:0.000000}",
+					previousMap.CenterLatitudeLongitude.x,
+					previousMap.CenterLatitudeLongitude.y);
+				options.locationOptions.zoom = zoom;
+				currentMap.Options = options;
+				currentMap.enabled = true;
+				currentMap.gameObject.SetActive (true);
+			}
+			else {
+				currentMap.gameObject.SetActive (true);
+				currentMap.UpdateMap (previousMap.CenterLatitudeLongitude, zoom);
+				currentMap.transform.localScale = mapInitScale;
+			}
 		}
 
 		private static Snapshot Lerp (Snapshot s1, Snapshot s2, double simTime) {
