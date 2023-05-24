@@ -10,20 +10,23 @@ namespace Assets.Scripts {
 		private AbstractMap[] maps = new AbstractMap[2];
 		private int visibleMapIndex;
 		private Vector3 mapInitScale;
+		private Transform mapParent;
 
 		private const float secondaryMapSinkBase = 10f;
 		private const float secondaryMapSinkFactor = .1f;
 		private const float secondaryMapHideDelay = 3f;
 		private float secondaryMapHideTimer;
 
-		const float horizontalRefreshThreshold = 500;
-		const float horizontalRefreshThresholdAltitudeFactor = 1f;
+		private const float horizontalRefreshThreshold = 500;
+		private const float horizontalRefreshThresholdAltitudeFactor = 1f;
+
+		private const float maxMapAltitude = 4000;
+		private const float minHeightAboveGround = 2;
 
 		private readonly Dictionary<float, int> altitudeZooms = new Dictionary<float, int> () {
 			{ 0, 15 },
 			{ 400, 12 },
-			{ 2000, 9 },
-			{ 4000, 7 },
+			{ 2000, 10 },
 		};
 		private float lastZoomChangeAlt;
 		const int minZoomChangeAltDelta = 200;
@@ -40,11 +43,18 @@ namespace Assets.Scripts {
 		private int desyncCounts;
 		private const int maxDesyncCounts = 3;
 
+		private const float lastSnapshotMaxDelay = 1f;
+		private float lastSnapshotTime = -lastSnapshotMaxDelay;
+
 		void Start () {
 			if (maps.Length != 2 || !maps[0] || !maps[1]) {
 				Debug.LogWarning ("invalid maps, disabling component");
 				enabled = false;
 				return;
+			}
+			mapParent = maps[0].transform.parent;
+			if (!mapParent) {
+				Debug.LogWarning ("no maps parent");
 			}
 			if (maps[0].enabled || maps[1].enabled) {
 				Debug.LogWarning ("maps should initially be disabled");
@@ -56,6 +66,8 @@ namespace Assets.Scripts {
 		}
 
 		void LateUpdate () {
+			if (lastSnapshotTime < Time.time - lastSnapshotMaxDelay) return;
+
 			ApplyTimeDataOnTransform (aircraftTransform);
 			if (secondaryMapHideTimer > 0) {
 				secondaryMapHideTimer -= Time.deltaTime;
@@ -64,9 +76,9 @@ namespace Assets.Scripts {
 					maps[1 - visibleMapIndex].gameObject.SetActive (false);
 
 					// bring up current map
-					var pos = maps[visibleMapIndex].transform.position;
+					var pos = maps[visibleMapIndex].transform.localPosition;
 					pos.y = 0f;
-					maps[visibleMapIndex].transform.position = pos;
+					maps[visibleMapIndex].transform.localPosition = pos;
 				}
 			}
 		}
@@ -106,6 +118,8 @@ namespace Assets.Scripts {
 				map.Options = options;
 				map.enabled = true;
 			}
+
+			lastSnapshotTime = Time.time;
 		}
 
 		private void RemoveStaleSnapshots () {
@@ -167,7 +181,7 @@ namespace Assets.Scripts {
 
 			// apply map position
 			var horThres = horizontalRefreshThreshold + horizontalRefreshThresholdAltitudeFactor * Mathf.Max (0, alt);
-			var pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
+			var pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true);
 			if (Mathf.Abs (pos.x) > horThres ||
 				Mathf.Abs (pos.z) > horThres) {
 
@@ -176,9 +190,11 @@ namespace Assets.Scripts {
 					map.UpdateMap (new Vector2d (result.lat, result.lon));
 					map.transform.localScale = mapInitScale;
 				}
-				pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), false);
+				pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true);
 			}
-			pos.y = alt;
+
+			// set position y to altitude with a minimum height above ground
+			pos.y = Mathf.Max (alt, pos.y - mapParent.transform.position.y + minHeightAboveGround);
 
 			// rotation
 			var rot = result.attitude;
@@ -190,8 +206,14 @@ namespace Assets.Scripts {
 			pos += velocity * dt;
 			rot = Quaternion.Euler (spin * dt) * rot;
 
-			// apply result
+			// equally displace map/aircraft to simulate altitude (limit max displace to prevent z-depth issues)
+			var mapParentPos = mapParent.transform.position;
+			mapParentPos.y = -.5f * Mathf.Min (pos.y, maxMapAltitude);
+			pos.y = -mapParentPos.y;
+
+			// apply result position/rotation to aircraft
 			target.SetPositionAndRotation (pos, rot);
+			mapParent.transform.position = mapParentPos;
 		}
 
 		private int GetZoomForAltitude (float altitude) {
@@ -214,9 +236,9 @@ namespace Assets.Scripts {
 			var currentMap = maps[visibleMapIndex];
 
 			// sink current map depending on altitude
-			var pos = currentMap.transform.position;
+			var pos = currentMap.transform.localPosition;
 			pos.y = -secondaryMapSinkBase - secondaryMapSinkFactor * alt;
-			currentMap.transform.position = pos;
+			currentMap.transform.localPosition = pos;
 
 			secondaryMapHideTimer = secondaryMapHideDelay;
 

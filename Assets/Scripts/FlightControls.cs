@@ -7,6 +7,8 @@ namespace Assets.Scripts {
 		StickControl stick;
 		[SerializeField]
 		ThrottleControl throttle;
+		[SerializeField]
+		GameObject[] gearDownLights;
 
 		private bool gearDown = true;
 
@@ -18,13 +20,24 @@ namespace Assets.Scripts {
 		public bool GearDown { get => gearDown; set => gearDown = value; }
 
 		void Start () {
+			SetGearDown (gearDown);
+
 			if (Application.isEditor && cameraRig) cameraRig.localPosition += addCameraPosInEditor;
 		}
 
 		private void Update () {
 			if (Input.GetKeyDown (KeyCode.G)) {
-				gearDown = !gearDown;
+				ToggleGear ();
 			}
+		}
+
+		public void SetGearDown (bool gearDown) {
+			this.gearDown = gearDown;
+			foreach (var light in gearDownLights) light.SetActive (gearDown);
+		}
+
+		public void ToggleGear () {
+			SetGearDown (!gearDown);
 		}
 	}
 }
