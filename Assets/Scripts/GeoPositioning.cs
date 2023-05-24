@@ -55,7 +55,7 @@ namespace Assets.Scripts {
 			mapInitScale = maps[0].transform.localScale;
 		}
 
-		void Update () {
+		void LateUpdate () {
 			ApplyTimeDataOnTransform (aircraftTransform);
 			if (secondaryMapHideTimer > 0) {
 				secondaryMapHideTimer -= Time.deltaTime;
