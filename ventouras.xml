@@ -5,7 +5,8 @@
 Place this file in <FlightGearDirectory>/data/Protocol
 
 Usage:
-fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,out,25,localhost,5501,udp,ventouras --generic=socket,in,25,,5500,udp,ventouras
+fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,in,25,,5500,udp,ventouras --generic=socket,out,25,localhost,5501,udp,ventouras  --generic=socket,out,25,YOUR_OCULUS_IP_HERE,5501,udp,ventouras
+Replace YOUR_OCULUS_IP_HERE with IP address of Oculus (displayed when project app starts)
 ]]>
 </comment>
 <generic>
