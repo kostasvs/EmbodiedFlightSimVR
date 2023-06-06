@@ -1,1 +1,1 @@
-{"AccessToken":"your-token-here","MemoryCacheSize":500,"FileCacheSize":0,"DefaultTimeout":30,"AutoRefreshCache":false}
+{"AccessToken":"YOUR_KEY_HERE","MemoryCacheSize":500,"FileCacheSize":0,"DefaultTimeout":30,"AutoRefreshCache":false}
