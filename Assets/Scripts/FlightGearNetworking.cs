@@ -116,7 +116,7 @@ namespace Assets.Scripts {
 				controls.Stick.Output.x,
 				controls.Stick.Output.y,
 				controls.Throttle.Output,
-				0f, // rudder
+				controls.Rudder.Output,
 				controls.GearDown ? 1 : 0);
 		}
 	}

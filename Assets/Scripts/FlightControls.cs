@@ -8,6 +8,8 @@ namespace Assets.Scripts {
 		[SerializeField]
 		ThrottleControl throttle;
 		[SerializeField]
+		RudderControl rudder;
+		[SerializeField]
 		GameObject[] gearDownLights;
 
 		private bool gearDown = true;
@@ -17,6 +19,7 @@ namespace Assets.Scripts {
 
 		public StickControl Stick => stick;
 		public ThrottleControl Throttle => throttle;
+		public RudderControl Rudder { get => rudder; set => rudder = value; }
 		public bool GearDown { get => gearDown; set => gearDown = value; }
 
 		void Start () {
