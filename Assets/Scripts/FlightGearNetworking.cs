@@ -113,16 +113,16 @@ namespace Assets.Scripts {
 		}
 
 		private string FormulateMessage () {
-			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\n",
+			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\t{5:0.00}\t{6:0.00}\t{7:0.00}\t{8:0.00}\n",
 				controls.Stick.Output.x,
 				controls.Stick.Output.y,
 				controls.Throttle.Output,
 				controls.Rudder.Output,
 				controls.GearDown ? 1 : 0,
 				0, // parking brake
-				0, // parking left
-				0, // parking right
-				0 // canopy
+				controls.Brake.Output, // parking left
+				controls.Brake.Output, // parking right
+				0 // canopy (0 = fully closed, 1 = fully open)
 				);
 		}
 	}

@@ -7,6 +7,7 @@ Place this file in <FlightGearDirectory>/data/Protocol
 Usage:
 fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,in,25,,5500,udp,ventouras --generic=socket,out,25,localhost,5501,udp,ventouras  --generic=socket,out,25,YOUR_OCULUS_IP_HERE,5501,udp,ventouras
 Replace YOUR_OCULUS_IP_HERE with IP address of Oculus (displayed when project app starts)
+Outbound connection to localhost is only needed for testing locally (i.e. in Unity editor)
 ]]>
 </comment>
 <generic>
@@ -149,6 +150,34 @@ Replace YOUR_OCULUS_IP_HERE with IP address of Oculus (displayed when project ap
       <name>gear-down</name>
       <type>bool</type>
       <node>/controls/gear/gear-down</node>
+    </chunk>
+
+    <chunk>
+      <name>brake-parking</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/controls/gear/brake-parking</node>
+    </chunk>
+
+    <chunk>
+      <name>brake-left</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/controls/gear/brake-left</node>
+    </chunk>
+
+    <chunk>
+      <name>brake-right</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/controls/gear/brake-right</node>
+    </chunk>
+
+    <chunk>
+      <name>canopy</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/sim/model/door-positions/crew/position-norm</node>
     </chunk>
 
   </input>
