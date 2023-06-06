@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts {
+namespace Assets.Scripts.Controls {
 	public class RudderControl : MonoBehaviour {
 		public float Output { get; private set; }
 

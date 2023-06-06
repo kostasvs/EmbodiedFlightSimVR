@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Oculus.Interaction;
 
-namespace Assets.Scripts {
+namespace Assets.Scripts.Controls {
 	public class ThrottleControl : MonoBehaviour {
 		public float Output { get; private set; }
 		private float SlowOutput;

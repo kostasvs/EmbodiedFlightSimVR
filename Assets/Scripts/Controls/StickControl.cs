@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Oculus.Interaction;
 
-namespace Assets.Scripts {
+namespace Assets.Scripts.Controls {
 	public class StickControl : MonoBehaviour {
 		public Vector2 Output { get; private set; }
 		private Vector2 SlowOutput;

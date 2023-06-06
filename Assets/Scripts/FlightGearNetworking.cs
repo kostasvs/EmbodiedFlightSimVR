@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Assets.Scripts.Controls;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -117,7 +118,12 @@ namespace Assets.Scripts {
 				controls.Stick.Output.y,
 				controls.Throttle.Output,
 				controls.Rudder.Output,
-				controls.GearDown ? 1 : 0);
+				controls.GearDown ? 1 : 0,
+				0, // parking brake
+				0, // parking left
+				0, // parking right
+				0 // canopy
+				);
 		}
 	}
 }
