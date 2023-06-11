@@ -7,7 +7,7 @@ namespace Assets.Scripts.Controls {
 		private float SlowOutput;
 
 		private float maxZ;
-		private const float lowZThres = 0.001f;
+		private const float zThres = 0.001f;
 
 		private AudioSource au;
 		private float auVolumeInitial;
@@ -22,7 +22,7 @@ namespace Assets.Scripts.Controls {
 		}
 
 		void Update () {
-			var prevOutput = Mathf.Clamp (Output, lowZThres, 1f);
+			var prevOutput = Mathf.Clamp (Output, zThres, 1f - zThres);
 
 			if (Application.isEditor) {
 				var dir = (Input.GetKey (KeyCode.UpArrow) ? 1f : 0f) + (Input.GetKey (KeyCode.DownArrow) ? -1f : 0f);
@@ -31,8 +31,8 @@ namespace Assets.Scripts.Controls {
 			else if (maxZ > 0) Output = Mathf.Clamp01 (transform.localPosition.z / maxZ);
 
 			SlowOutput = Mathf.MoveTowards (SlowOutput, Output, Time.deltaTime * 2f);
-			var outputThres = Mathf.Clamp (Output, lowZThres, 1f);
-			if (prevOutput != outputThres && (outputThres == lowZThres || outputThres == 1f)) {
+			var outputThres = Mathf.Clamp (Output, zThres, 1f - zThres);
+			if (prevOutput != outputThres && (outputThres == zThres || outputThres == 1f - zThres)) {
 				if (SlowOutput != Output) {
 					au.pitch = 1f;
 					au.volume = auVolumeInitial;
@@ -42,8 +42,8 @@ namespace Assets.Scripts.Controls {
 					au.volume = auVolumeInitial * .4f;
 				}
 				//au.Play (); // disabled due to audio delay
-				if (SlowOutput != Output) OVRInputWrapper.VibratePulseMed (false);
-				else OVRInputWrapper.VibratePulseLow (false);
+				if (SlowOutput != Output) OVRInputWrapper.VibratePulseMed (0);
+				else OVRInputWrapper.VibratePulseLow (0);
 			}
 		}
 	}

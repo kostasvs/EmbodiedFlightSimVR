@@ -25,18 +25,29 @@ public class OVRInputWrapper : MonoBehaviour {
 		}
 	}
 
-	public static void Vibrate (bool rightHand, float amplitude, float time) {
-		if (!instance) return;
+	/// <summary>
+	/// Vibrate Oculus controller.
+	/// </summary>
+	/// <param name="amplitude">vibration amplitude</param>
+	/// <param name="time">vibration duration in seconds (between 0 and 2)</param>
+	/// <param name="handIndex">0 = left hand, 1 = right hand, other values = both hands</param>
+	public static void Vibrate (float amplitude, float time, int handIndex = -1) {
+		if (!instance || time <= 0f) return;
+		if (handIndex < 0 || handIndex > 1) {
+			Vibrate (amplitude, time, 0);
+			Vibrate (amplitude, time, 1);
+			return;
+		}
 		OVRInput.SetControllerVibration (1f, Mathf.Clamp01 (amplitude),
-			rightHand ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch);
-		instance.vibrationTimer[rightHand ? 1 : 0] = time;
+			handIndex == 1 ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch);
+		instance.vibrationTimer[handIndex] = time;
 	}
 
-	public static void VibratePulseLow (bool rightHand) {
-		Vibrate (rightHand, .5f, .05f);
+	public static void VibratePulseLow (int handIndex = -1) {
+		Vibrate (.5f, .05f, handIndex);
 	}
 
-	public static void VibratePulseMed (bool rightHand) {
-		Vibrate (rightHand, 1f, .1f);
+	public static void VibratePulseMed (int handIndex = -1) {
+		Vibrate (1f, .1f, handIndex);
 	}
 }

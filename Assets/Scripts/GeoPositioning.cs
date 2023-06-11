@@ -22,6 +22,7 @@ namespace Assets.Scripts {
 
 		private const float maxMapAltitude = 4000;
 		private const float minHeightAboveGround = 2;
+		private bool isGrounded = true;
 
 		private readonly Dictionary<float, int> altitudeZooms = new Dictionary<float, int> () {
 			{ 0, 15 },
@@ -104,7 +105,7 @@ namespace Assets.Scripts {
 				desyncCounts = 0;
 				RemoveStaleSnapshots ();
 			}
-			if (snapshots.Count > 100) Debug.LogWarning("too many snapshots being preserved: " +  snapshots.Count);
+			if (snapshots.Count > 100) Debug.LogWarning ("too many snapshots being preserved: " + snapshots.Count);
 
 			// add snapshot with new info
 			var attitude = Quaternion.Euler (-pitch, yaw, -roll);
@@ -194,7 +195,11 @@ namespace Assets.Scripts {
 			}
 
 			// set position y to altitude with a minimum height above ground
-			pos.y = Mathf.Max (alt, pos.y - mapParent.transform.position.y + minHeightAboveGround);
+			var groundY = pos.y - mapParent.transform.position.y + minHeightAboveGround;
+			pos.y = Mathf.Max (alt, groundY);
+			var prevGrounded = isGrounded;
+			isGrounded = pos.y == groundY;
+			if (isGrounded && !prevGrounded) OVRInputWrapper.VibratePulseMed (-1);
 
 			// rotation
 			var rot = result.attitude;

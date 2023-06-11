@@ -59,8 +59,8 @@ namespace Assets.Scripts.Controls {
 					au.volume = auVolumeInitial * .4f;
 				}
 				//au.Play (); // disabled due to audio delay
-				if (plauSoundLoud) OVRInputWrapper.VibratePulseMed (true);
-				else OVRInputWrapper.VibratePulseLow (true);
+				if (plauSoundLoud) OVRInputWrapper.VibratePulseMed (1);
+				else OVRInputWrapper.VibratePulseLow (1);
 			}
 		}
 	}
