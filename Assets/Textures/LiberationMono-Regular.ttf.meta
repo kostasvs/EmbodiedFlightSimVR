@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6de7ca43b32139e418c8a2477ac5285d
+guid: 0bdfecc5a8e11d243ab3057ee99b25bc
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Lucida Console
+  - Liberation Mono
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
