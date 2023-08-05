@@ -112,6 +112,124 @@ Outbound connection to localhost is only needed for testing locally (i.e. in Uni
     <node>/sim/time/steady-clock-sec</node>
    </chunk>
 
+   <chunk>
+    <name>magnetic heading (deg)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/orientation/heading-magnetic-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>AP heading bug (deg)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/autopilot/settings/heading-bug-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>display heading (deg)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/instrumentation/efis/mfd/true-north</node>
+   </chunk>
+
+   <chunk>
+    <name>alpha (deg)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/orientation/alpha-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>beta (deg)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/orientation/side-slip-deg</node>
+   </chunk>
+
+   <chunk>
+    <name>g load (g)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/accelerations/pilot-g</node>
+   </chunk>
+
+   <chunk>
+    <name>airspeed (kts)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/velocities/airspeed-kt</node>
+   </chunk>
+
+   <chunk>
+    <name>mach</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/velocities/mach</node>
+   </chunk>
+
+   <chunk>
+    <name>ground speed (kts)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/velocities/groundspeed-kt</node>
+   </chunk>
+
+   <chunk>
+    <name>vertical speed (fps)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/velocities/vertical-speed-fps</node>
+   </chunk>
+
+   <chunk>
+    <name>indicated altitude (ft)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/instrumentation/altimeter/indicated-altitude-ft</node>
+   </chunk>
+ 
+   <chunk>
+    <name>rad altitude (ft)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/position/altitude-agl-ft</node>
+   </chunk>
+
+   <chunk>
+    <name>gear pos (0 closed 1 open)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/gear/gear[1]/position-norm</node>
+   </chunk>
+
+    <chunk>
+      <name>weight on wheels</name>
+      <type>bool</type>
+      <node>/gear/gear[1]/wow</node>
+    </chunk>
+
+   <chunk>
+    <name>AP target speed (kts)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/autopilot/settings/target-speed-kt</node>
+   </chunk>
+
+   <chunk>
+    <name>acceleration (fps2)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/fdm/jsbsim/accelerations/udot-ft_sec2</node>
+   </chunk>
+
+   <chunk>
+    <name>afterburner (0 off 1 full)</name>
+    <type>float</type>
+    <format>%.2f</format>
+    <node>/engines/engine[0]/afterburner</node>
+   </chunk>
+
   </output>
 
   <input>
