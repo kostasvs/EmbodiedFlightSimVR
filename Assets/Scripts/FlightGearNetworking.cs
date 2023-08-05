@@ -105,10 +105,31 @@ namespace Assets.Scripts {
 				float.TryParse (parts[9], out var yawRate) &&
 				float.TryParse (parts[10], out var pitchRate) &&
 				float.TryParse (parts[11], out var rollRate) &&
-				double.TryParse (parts[12], out var simTime)) {
+				double.TryParse (parts[12], out var simTime) &&
+				float.TryParse (parts[13], out var magHeading) &&
+				float.TryParse (parts[14], out var apHeading) &&
+				float.TryParse (parts[15], out var displayHeading) &&
+				float.TryParse (parts[16], out var alpha) &&
+				float.TryParse (parts[17], out var beta) &&
+				float.TryParse (parts[18], out var gLoad) &&
+				float.TryParse (parts[19], out var airspeed) &&
+				float.TryParse (parts[20], out var mach) &&
+				float.TryParse (parts[21], out var groundSpeed) &&
+				float.TryParse (parts[22], out var verticalSpeed) &&
+				float.TryParse (parts[23], out var indicatedAltitude) &&
+				float.TryParse (parts[24], out var radarAltitude) &&
+				float.TryParse (parts[25], out var gearPos) &&
+				float.TryParse (parts[26], out var weightOnWheels) &&
+				float.TryParse (parts[27], out var apTargetSpeed) &&
+				float.TryParse (parts[28], out var acceleration) &&
+				float.TryParse (parts[29], out var afterburner)) {
 
 				hasReceivedValidData = true;
-				geo.AddSnapshot (lat, lon, altitude, vn, ve, vd, yaw, pitch, roll, yawRate, pitchRate, rollRate, simTime);
+				var attitude = Quaternion.Euler (-pitch, yaw, -roll);
+				geo.AddSnapshot (new Snapshot (
+					lat, lon, altitude, vn, ve, vd, attitude, yawRate, pitchRate, rollRate, simTime,
+					magHeading, apHeading, displayHeading, alpha, beta, gLoad, airspeed, mach, groundSpeed, verticalSpeed,
+					indicatedAltitude, radarAltitude, gearPos, weightOnWheels > 0, apTargetSpeed, acceleration, afterburner));
 			}
 		}
 

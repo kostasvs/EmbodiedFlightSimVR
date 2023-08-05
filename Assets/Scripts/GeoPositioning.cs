@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts {
 	public class GeoPositioning : MonoBehaviour {
+		private static GeoPositioning instance;
 
 		[SerializeField]
 		private AbstractMap[] maps = new AbstractMap[2];
@@ -47,6 +48,10 @@ namespace Assets.Scripts {
 		private const float lastSnapshotMaxDelay = 1f;
 		private float lastSnapshotTime = -lastSnapshotMaxDelay;
 
+		private void Awake () {
+			instance = this;
+		}
+
 		void Start () {
 			if (maps.Length != 2 || !maps[0] || !maps[1]) {
 				Debug.LogWarning ("invalid maps, disabling component");
@@ -86,18 +91,14 @@ namespace Assets.Scripts {
 
 		public double GetCurSimTime () => Time.timeAsDouble + curSimTimeOffset;
 
-		public void AddSnapshot (double lat, double lon, double alt,
-			float vn, float ve, float vd,
-			float yaw, float pitch, float roll,
-			float yawRate, float pitchRate, float rollRate,
-			double simTime) {
+		public void AddSnapshot (Snapshot snapshot) {
 
 			// match local time to simulation time if they are repeatedly too far apart
-			if (Mathf.Abs ((float)(GetCurSimTime () - simTime - simLatency)) > maxSimTimeOffset) {
+			if (Mathf.Abs ((float)(GetCurSimTime () - snapshot.simTime - simLatency)) > maxSimTimeOffset) {
 				desyncCounts++;
 				if (desyncCounts >= maxDesyncCounts) {
 					desyncCounts = 0;
-					curSimTimeOffset = simTime - Time.timeAsDouble - simLatency;
+					curSimTimeOffset = snapshot.simTime - Time.timeAsDouble - simLatency;
 					Debug.Log ("Resetting time to " + GetCurSimTime ());
 				}
 			}
@@ -108,14 +109,13 @@ namespace Assets.Scripts {
 			if (snapshots.Count > 100) Debug.LogWarning ("too many snapshots being preserved: " + snapshots.Count);
 
 			// add snapshot with new info
-			var attitude = Quaternion.Euler (-pitch, yaw, -roll);
-			snapshots.Add (new Snapshot (lat, lon, alt, vn, ve, vd, attitude, yawRate, pitchRate, rollRate, simTime));
+			snapshots.Add (snapshot);
 
 			// initialize map if this is first received info
 			var map = maps[visibleMapIndex];
 			if (!map.enabled) {
 				var options = map.Options;
-				options.locationOptions.latitudeLongitude = string.Format ("{0:0.000000}, {1:0.000000}", lat, lon);
+				options.locationOptions.latitudeLongitude = string.Format ("{0:0.000000}, {1:0.000000}", snapshot.lat, snapshot.lon);
 				map.Options = options;
 				map.enabled = true;
 			}
@@ -130,6 +130,17 @@ namespace Assets.Scripts {
 					snapshots.RemoveAt (i);
 				}
 			}
+		}
+
+		public static Snapshot GetCurSnapshot () {
+			if (!instance) return default;
+
+			var curTime = instance.GetCurSimTime ();
+			for (int i = instance.snapshots.Count - 1; i >= 0; i--) {
+				var s = instance.snapshots[i];
+				if (s.simTime <= curTime) return s;
+			}
+			return instance.snapshots.Count > 0 ? instance.snapshots[0] : default;
 		}
 
 		public void ApplyTimeDataOnTransform (Transform target) {
@@ -268,20 +279,16 @@ namespace Assets.Scripts {
 		private static Snapshot Lerp (Snapshot s1, Snapshot s2, double simTime) {
 			if (simTime < s1.simTime) return s1;
 			if (simTime > s2.simTime) return s2;
+
 			float alpha = (float)((simTime - s1.simTime) / (s2.simTime - s1.simTime));
-			return new Snapshot (
-				s1.lat + (s2.lat - s1.lat) * alpha,
-				s1.lon + (s2.lon - s1.lon) * alpha,
-				s1.alt + (s2.alt - s1.alt) * alpha,
-				s1.vn + (s2.vn - s1.vn) * alpha,
-				s1.ve + (s2.ve - s1.ve) * alpha,
-				s1.vd + (s2.vd - s1.vd) * alpha,
-				Quaternion.Slerp (s1.attitude, s2.attitude, alpha),
-				// don't interpolate spin rates as there may be edge cases with 360-to-0 wrap
-				s1.yawRate,
-				s1.pitchRate,
-				s1.rollRate,
-				simTime);
+			s1.lat += (s2.lat - s1.lat) * alpha;
+			s1.lon += (s2.lon - s1.lon) * alpha;
+			s1.alt += (s2.alt - s1.alt) * alpha;
+			s1.vn += (s2.vn - s1.vn) * alpha;
+			s1.ve += (s2.ve - s1.ve) * alpha;
+			s1.vd += (s2.vd - s1.vd) * alpha;
+			s1.attitude = Quaternion.Slerp (s1.attitude, s2.attitude, alpha);
+			return s1;
 		}
 	}
 
@@ -297,12 +304,25 @@ namespace Assets.Scripts {
 		public float pitchRate;
 		public float rollRate;
 		public double simTime;
+		public float magHeading;
+		public float apHeading;
+		public float displayHeading;
+		public float alpha;
+		public float beta;
+		public float gLoad;
+		public float airspeed;
+		public float mach;
+		public float groundSpeed;
+		public float verticalSpeed;
+		public float indicatedAltitude;
+		public float radarAltitude;
+		public float gearPos;
+		public bool weightOnWheels;
+		public float apTargetSpeed;
+		public float acceleration;
+		public float afterburner;
 
-		public Snapshot (double lat, double lon, double alt,
-			float vn, float ve, float vd,
-			Quaternion attitude,
-			float yawRate, float pitchRate, float rollRate,
-			double simTime) {
+		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner) {
 			this.lat = lat;
 			this.lon = lon;
 			this.alt = alt;
@@ -314,6 +334,23 @@ namespace Assets.Scripts {
 			this.pitchRate = pitchRate;
 			this.rollRate = rollRate;
 			this.simTime = simTime;
+			this.magHeading = magHeading;
+			this.apHeading = apHeading;
+			this.displayHeading = displayHeading;
+			this.alpha = alpha;
+			this.beta = beta;
+			this.gLoad = gLoad;
+			this.airspeed = airspeed;
+			this.mach = mach;
+			this.groundSpeed = groundSpeed;
+			this.verticalSpeed = verticalSpeed;
+			this.indicatedAltitude = indicatedAltitude;
+			this.radarAltitude = radarAltitude;
+			this.gearPos = gearPos;
+			this.weightOnWheels = weightOnWheels;
+			this.apTargetSpeed = apTargetSpeed;
+			this.acceleration = acceleration;
+			this.afterburner = afterburner;
 		}
 	}
 }
