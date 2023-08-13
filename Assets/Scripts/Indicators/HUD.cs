@@ -31,6 +31,10 @@ namespace Assets.Scripts.Indicators {
 		private Text altitudeText;
 		[SerializeField]
 		private Text radaltText;
+		[SerializeField]
+		private RectTransform trackMarker;
+		[SerializeField]
+		private float trackMarkerOffsetFactor = 1f;
 
 		private void Start () {
 			aircraftTr = transform.root;
@@ -79,6 +83,13 @@ namespace Assets.Scripts.Indicators {
 				radaltText.text = "***** H";
 			}
 			else radaltText.text = radalt.ToString ("0") + " H";
+
+			// track
+			var velocity = aircraftTr.InverseTransformDirection (new Vector3 (snapshot.ve, -snapshot.vd, snapshot.vn));
+			var track = Mathf.Atan2 (velocity.x, velocity.z) * Mathf.Rad2Deg;
+			var pos = trackMarker.anchoredPosition;
+			pos.x = track * ANGLES_TO_PIXELS * trackMarkerOffsetFactor;
+			trackMarker.anchoredPosition = pos;
 		}
 
 		private static float Angle180 (float angle) {
