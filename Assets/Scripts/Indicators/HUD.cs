@@ -35,6 +35,14 @@ namespace Assets.Scripts.Indicators {
 		private RectTransform trackMarker;
 		[SerializeField]
 		private float trackMarkerOffsetFactor = 1f;
+		[SerializeField]
+		private RectTransform flightVector;
+		[SerializeField]
+		private RectTransform vMarkers;
+		[SerializeField]
+		private float vMarkerOffsetFactor = 1f;
+		[SerializeField]
+		private float vMarkerOffsetMax = 100f;
 
 		private void Start () {
 			aircraftTr = transform.root;
@@ -86,10 +94,27 @@ namespace Assets.Scripts.Indicators {
 
 			// track
 			var velocity = aircraftTr.InverseTransformDirection (new Vector3 (snapshot.ve, -snapshot.vd, snapshot.vn));
-			var track = Mathf.Atan2 (velocity.x, velocity.z) * Mathf.Rad2Deg;
 			var pos = trackMarker.anchoredPosition;
-			pos.x = track * ANGLES_TO_PIXELS * trackMarkerOffsetFactor;
+			if (velocity.sqrMagnitude < .01f) pos.x = 0f;
+			else {
+				var track = Mathf.Atan2 (velocity.x, velocity.z) * Mathf.Rad2Deg;
+				pos.x = track * ANGLES_TO_PIXELS * trackMarkerOffsetFactor;
+			}
 			trackMarker.anchoredPosition = pos;
+
+			// flight vector
+			if (velocity.sqrMagnitude < .01f) pos = Vector2.zero;
+			else {
+				var track = Mathf.Atan2 (velocity.x, velocity.z) * Mathf.Rad2Deg;
+				var elevationRelative = Mathf.Atan2 (velocity.y, velocity.z) * Mathf.Rad2Deg;
+				pos = new Vector2 (track, elevationRelative) * ANGLES_TO_PIXELS;
+			}
+			flightVector.anchoredPosition = pos;
+
+			// v markers
+			var vMarkersPos = vMarkers.anchoredPosition;
+			vMarkersPos.y = Mathf.Clamp (snapshot.acceleration * vMarkerOffsetFactor, -vMarkerOffsetMax, vMarkerOffsetMax);
+			vMarkers.anchoredPosition = vMarkersPos;
 		}
 
 		private static float Angle180 (float angle) {
