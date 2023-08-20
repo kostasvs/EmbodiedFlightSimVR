@@ -15,12 +15,15 @@ namespace Assets.Scripts {
 		[SerializeField]
 		private float sendRate = 1f / 25f;
 
+		[SerializeField]
+		private bool isMaster = true;
+		private EndPoint peerEndpoint = null;
+
 		UdpClient listener;
 		IPEndPoint groupEP;
 
 		Socket socket;
 		IPEndPoint targetEndpoint = null;
-		IPAddress lastReceivedAddress = null;
 
 		private string receivedData = null;
 		private bool hasReceivedAnyData = false;
@@ -46,7 +49,7 @@ namespace Assets.Scripts {
 
 			socket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-			InvokeRepeating (nameof (Send), 0f, sendRate);
+			InvokeRepeating (nameof (SendOutputs), 0f, sendRate);
 		}
 
 		private void OnDestroy () {
@@ -68,12 +71,53 @@ namespace Assets.Scripts {
 					byte[] bytes = listener.Receive (ref groupEP);
 					var readout = Encoding.ASCII.GetString (bytes, 0, bytes.Length);
 					if (!string.IsNullOrEmpty (readout)) {
-						receivedData = readout;
-						if (lastReceivedAddress == null) {
-							lastReceivedAddress = groupEP.Address;
-							Debug.Log ("Begin sending data to " + lastReceivedAddress.ToString ());
-							targetEndpoint = new IPEndPoint (lastReceivedAddress, portToSend);
+						// check if this is a connection broker handshake message
+						if (readout == "connection_broker") {
+							// reply with master/slave message
+							byte[] sendbuf = Encoding.ASCII.GetBytes (isMaster ? "master" : "slave");
+							socket.SendTo (sendbuf, groupEP);
+							continue;
 						}
+
+						// check if this is a handshake follow-up message
+						if (readout.StartsWith ("clients: ")) {
+							// parse the json payload
+							var json_payload = readout.Substring (9);
+							var clients = JsonUtility.FromJson<Clients> (json_payload);
+							string[] addrPort = null;
+
+							// read flightGear address if available, otherwise use the sender address
+							var flightGearAddress = groupEP.Address;
+							if (!string.IsNullOrEmpty (clients?.flightGear)) {
+								addrPort = clients.flightGear.Split (':');
+								if (addrPort.Length != 2) {
+									Debug.LogWarning ("Invalid flightGear address received");
+								}
+								else {
+									flightGearAddress = IPAddress.Parse (addrPort[0]);
+									portToSend = ushort.Parse (addrPort[1]);
+								}
+							}
+							targetEndpoint = new IPEndPoint (flightGearAddress, portToSend);
+							Debug.Log ("Begin sending FlightGear outputs to " + targetEndpoint.ToString ());
+
+							// read peer address
+							var peerAddrPort = isMaster ? clients?.slave : clients?.master;
+							if (string.IsNullOrEmpty (peerAddrPort)) {
+								Debug.LogWarning ("No peer address received");
+								continue;
+							}
+							addrPort = peerAddrPort.Split (':');
+							if (addrPort.Length != 2) {
+								Debug.LogWarning ("Invalid peer address received");
+								continue;
+							}
+							peerEndpoint = new IPEndPoint (IPAddress.Parse (addrPort[0]), ushort.Parse (addrPort[1]));
+							Debug.Log ("Connected to peer " + peerEndpoint.ToString ());
+							continue;
+						}
+
+						receivedData = readout;
 					}
 				}
 			}
@@ -82,7 +126,7 @@ namespace Assets.Scripts {
 			}
 		}
 
-		private void Send () {
+		private void SendOutputs () {
 			if (targetEndpoint == null) return;
 
 			string msg = FormulateMessage ();
@@ -145,6 +189,12 @@ namespace Assets.Scripts {
 				controls.Brake.Output, // parking right
 				0 // canopy (0 = fully closed, 1 = fully open)
 				);
+		}
+
+		private class Clients {
+			public string master;
+			public string slave;
+			public string flightGear;
 		}
 	}
 }
