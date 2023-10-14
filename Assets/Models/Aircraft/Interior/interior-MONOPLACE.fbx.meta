@@ -1,9 +1,29 @@
 fileFormatVersion: 2
 guid: 6cadfab0dece55e4cb4c6a7650d37167
 ModelImporter:
-  serializedVersion: 20200
+  serializedVersion: 20300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: panneau.006
+    second: {fileID: 2100000, guid: 1c1f9a0869953814fbce5774431f7422, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: panneau.007
+    second: {fileID: 2100000, guid: e3d76f310b9d88f438c08564496a1c46, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: panneau.008
+    second: {fileID: 2100000, guid: 7e51cd4c38cb73d44a82f7dfb65dd544, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: transparent_interior.002
+    second: {fileID: 2100000, guid: 88b4091f4ef191e43ae242bd0a698529, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -96,6 +116,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
