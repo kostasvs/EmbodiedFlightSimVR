@@ -76,3 +76,6 @@ crashlytics-build.properties
 
 # OVR Build binaries
 /OVRAssetBundles/
+
+*.log
+*.log.meta
