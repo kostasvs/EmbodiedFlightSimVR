@@ -3,6 +3,8 @@ import json
 import subprocess
 
 def main():
+    # receiving port of broker
+    receiving_port = 5502
     # receiving port of the project app
     target_port = 5501
     # content of initial handshake message to the project app
@@ -29,6 +31,7 @@ def main():
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind(("", receiving_port))
     sock.settimeout(5)  # Set a timeout for receiving
 
     # send message to all IPs in local network
@@ -56,6 +59,7 @@ def main():
         except ConnectionResetError:
             # Connection reset by remote host, reopen socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.bind(("", receiving_port))
             sock.settimeout(5)  # Set a timeout for receiving
 
     for i in missing_replies:

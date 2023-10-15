@@ -13,6 +13,8 @@ namespace Assets.Scripts {
 		[SerializeField]
 		private ushort portToReceive = 5501;
 		[SerializeField]
+		private ushort portToReplyBroker = 5502;
+		[SerializeField]
 		private float sendRate = 1f / 25f;
 
 		[SerializeField]
@@ -76,7 +78,7 @@ namespace Assets.Scripts {
 						if (readout == "connection_broker") {
 							// reply with master/slave message
 							byte[] sendbuf = Encoding.ASCII.GetBytes (isMaster ? "master" : "slave");
-							socket.SendTo (sendbuf, groupEP);
+							socket.SendTo (sendbuf, new IPEndPoint (groupEP.Address, portToReplyBroker));
 							continue;
 						}
 
