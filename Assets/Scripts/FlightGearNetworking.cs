@@ -26,7 +26,8 @@ namespace Assets.Scripts {
 		IPEndPoint targetEndpoint = null;
 
 		private string receivedData = null;
-		private bool hasReceivedAnyData = false;
+		private int packetsReceived = 0;
+		private const int minPacketsToStartSending = 10;
 		private bool hasReceivedValidData = false;
 
 		[SerializeField]
@@ -36,7 +37,7 @@ namespace Assets.Scripts {
 
 		public ushort PortToReceive => portToReceive;
 
-		public bool HasReceivedAnyData => hasReceivedAnyData;
+		public bool HasReceivedAnyData => packetsReceived > 0;
 		public bool HasReceivedValidData => hasReceivedValidData;
 
 		void Start () {
@@ -59,7 +60,7 @@ namespace Assets.Scripts {
 
 		private void Update () {
 			if (receivedData != null) {
-				hasReceivedAnyData = true;
+				packetsReceived++;
 				InterpretMessage (receivedData.Split ('\t'));
 				receivedData = null;
 			}
@@ -127,7 +128,7 @@ namespace Assets.Scripts {
 		}
 
 		private void SendOutputs () {
-			if (targetEndpoint == null) return;
+			if (targetEndpoint == null || !hasReceivedValidData || packetsReceived < minPacketsToStartSending) return;
 
 			string msg = FormulateMessage ();
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
