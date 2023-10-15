@@ -119,6 +119,15 @@ namespace Assets.Scripts {
 						}
 
 						receivedData = readout;
+
+						// if no FlightGear address has been received yet, use the sender address
+						// this is a fallback for the case that the connection broker is not used
+						// TODO: remove this fallback once the connection broker is used by default
+						if (targetEndpoint == null) {
+							var lastReceivedAddress = groupEP.Address;
+							Debug.LogWarning ("Begin sending FlightGear data to " + lastReceivedAddress.ToString ());
+							targetEndpoint = new IPEndPoint (lastReceivedAddress, portToSend);
+						}
 					}
 				}
 			}
