@@ -71,7 +71,7 @@ namespace Assets.Scripts {
 			mapInitScale = maps[0].transform.localScale;
 		}
 
-		void LateUpdate () {
+		void Update () {
 			if (lastSnapshotTime < Time.time - lastSnapshotMaxDelay) return;
 
 			ApplyTimeDataOnTransform (aircraftTransform);
@@ -277,8 +277,8 @@ namespace Assets.Scripts {
 		}
 
 		private static Snapshot Lerp (Snapshot s1, Snapshot s2, double simTime) {
-			if (simTime < s1.simTime) return s1;
-			if (simTime > s2.simTime) return s2;
+			if (simTime <= s1.simTime) return s1;
+			if (simTime >= s2.simTime) return s2;
 
 			float alpha = (float)((simTime - s1.simTime) / (s2.simTime - s1.simTime));
 			s1.lat += (s2.lat - s1.lat) * alpha;
@@ -288,6 +288,7 @@ namespace Assets.Scripts {
 			s1.ve += (s2.ve - s1.ve) * alpha;
 			s1.vd += (s2.vd - s1.vd) * alpha;
 			s1.attitude = Quaternion.Slerp (s1.attitude, s2.attitude, alpha);
+			s1.simTime = simTime;
 			return s1;
 		}
 	}
