@@ -16,24 +16,30 @@ namespace Assets.Scripts {
 		private ushort portToReplyBroker = 5502;
 		[SerializeField]
 		private float sendRate = 1f / 25f;
+		[SerializeField]
+		private float sendHandsRate = 1f / 20f;
 
 		[SerializeField]
 		private bool isMaster = true;
 		private EndPoint peerEndpoint = null;
 
 		UdpClient listener;
-		IPEndPoint groupEP;
 
 		Socket socket;
 		IPEndPoint targetEndpoint = null;
 
 		private string receivedData = null;
+		private byte[] receivedHandsData = null;
 		private int packetsReceived = 0;
+		[SerializeField]
+		private int anyPacketsReceived = 0;
 		private const int minPacketsToStartSending = 10;
 		private bool hasReceivedValidData = false;
 
 		[SerializeField]
 		private FlightControls controls;
+		[SerializeField]
+		private HandDataIO handDataIO;
 
 		private GeoPositioning geo;
 
@@ -44,15 +50,25 @@ namespace Assets.Scripts {
 
 		void Start () {
 			geo = GetComponent<GeoPositioning> ();
+			if (!geo) {
+				Debug.LogError ("FlightGearNetworking requires a GeoPositioning component on the same GameObject");
+			}
 
-			listener = new UdpClient (portToReceive);
-			groupEP = new IPEndPoint (IPAddress.Any, portToReceive);
+			if (!controls) {
+				Debug.LogError ("FlightGearNetworking requires a FlightControls component");
+			}
+			if (!handDataIO) {
+				Debug.LogError ("FlightGearNetworking requires a HandDataIO component");
+			}
+
+			listener = new UdpClient (portToReceive, AddressFamily.InterNetwork);
 			var thread = new Thread (Receive);
 			thread.Start ();
 
 			socket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 			InvokeRepeating (nameof (SendOutputs), 0f, sendRate);
+			InvokeRepeating (nameof (SendHandsOutputs), 0f, sendHandsRate);
 		}
 
 		private void OnDestroy () {
@@ -66,12 +82,29 @@ namespace Assets.Scripts {
 				InterpretMessage (receivedData.Split ('\t'));
 				receivedData = null;
 			}
+			if (receivedHandsData != null) {
+				handDataIO.Receive (receivedHandsData);
+				receivedHandsData = null;
+			}
 		}
 
 		private void Receive () {
 			try {
 				while (true) {
+					var groupEP = new IPEndPoint (IPAddress.Any, portToReceive);
 					byte[] bytes = listener.Receive (ref groupEP);
+					anyPacketsReceived++;
+					// check if message is VR hands data
+					if (handDataIO.IsValidData (bytes)) {
+						receivedHandsData = bytes;
+						// if no peer endpoint, set it to the sender address
+						if (peerEndpoint == null) {
+							peerEndpoint = new IPEndPoint (groupEP.Address, portToReceive);
+							Debug.LogWarning ("Begin sending VR hands data to " + peerEndpoint);
+						}
+						continue;
+					}
+
 					var readout = Encoding.ASCII.GetString (bytes, 0, bytes.Length);
 					if (!string.IsNullOrEmpty (readout)) {
 						// check if this is a connection broker handshake message
@@ -102,21 +135,21 @@ namespace Assets.Scripts {
 								}
 							}
 							targetEndpoint = new IPEndPoint (flightGearAddress, portToSend);
-							Debug.Log ("Begin sending FlightGear outputs to " + targetEndpoint.ToString ());
+							Debug.Log ("Begin sending FlightGear outputs to " + targetEndpoint);
 
-							// read peer address
+							// read peer address (override port with portToReceive)
 							var peerAddrPort = isMaster ? clients?.slave : clients?.master;
 							if (string.IsNullOrEmpty (peerAddrPort)) {
 								Debug.LogWarning ("No peer address received");
 								continue;
 							}
 							addrPort = peerAddrPort.Split (':');
-							if (addrPort.Length != 2) {
+							if (addrPort.Length != 1 && addrPort.Length != 2) {
 								Debug.LogWarning ("Invalid peer address received");
 								continue;
 							}
-							peerEndpoint = new IPEndPoint (IPAddress.Parse (addrPort[0]), ushort.Parse (addrPort[1]));
-							Debug.Log ("Connected to peer " + peerEndpoint.ToString ());
+							peerEndpoint = new IPEndPoint (IPAddress.Parse (addrPort[0]), portToReceive);
+							Debug.Log ("Connected to peer " + peerEndpoint);
 							continue;
 						}
 
@@ -127,8 +160,8 @@ namespace Assets.Scripts {
 						// TODO: remove this fallback once the connection broker is used by default
 						if (targetEndpoint == null) {
 							var lastReceivedAddress = groupEP.Address;
-							Debug.LogWarning ("Begin sending FlightGear data to " + lastReceivedAddress.ToString ());
 							targetEndpoint = new IPEndPoint (lastReceivedAddress, portToSend);
+							Debug.LogWarning ("Begin sending FlightGear outputs to " + targetEndpoint);
 						}
 					}
 				}
@@ -144,6 +177,10 @@ namespace Assets.Scripts {
 			string msg = FormulateMessage ();
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
 			socket.SendTo (sendbuf, targetEndpoint);
+		}
+		
+		private void SendHandsOutputs () {
+			if (handDataIO) handDataIO.Transmit (socket, peerEndpoint);
 		}
 
 		private void InterpretMessage (string[] parts) {
