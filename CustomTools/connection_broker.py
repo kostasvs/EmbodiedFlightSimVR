@@ -1,6 +1,7 @@
 import socket
 import json
 import subprocess
+import time
 
 def main():
     # receiving port of broker
@@ -80,9 +81,14 @@ def main():
 
     sock.close()
 
-    # run flightgear
-    print(flightgear_cmd)
-    subprocess.Popen(flightgear_cmd, cwd=flightgear_cmd_cwd)
+    if len(missing_replies) == len(expected_replies):
+        print(f"No responses received, aborting FlightGear launch")
+        time.sleep(5)
+    else:
+        # run flightgear
+        print(flightgear_cmd)
+        subprocess.Popen(flightgear_cmd, cwd=flightgear_cmd_cwd)
+        time.sleep(3)
 
 if __name__ == "__main__":
     main()
