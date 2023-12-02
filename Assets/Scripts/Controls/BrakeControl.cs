@@ -12,5 +12,15 @@ namespace Assets.Scripts.Controls {
 				Output = Mathf.Clamp01 (-OVRInput.Get (OVRInput.Axis2D.SecondaryThumbstick).y);
 			}
 		}
+
+		public float GetCombinedOutput () {
+			if (FlightGearNetworking.Instance.PeerInput.Brake < .1f) {
+				return Output;
+			}
+			if (Output < .1f) {
+				return FlightGearNetworking.Instance.PeerInput.Brake;
+			}
+			return (Output + FlightGearNetworking.Instance.PeerInput.Brake) / 2f;
+		}
 	}
 }

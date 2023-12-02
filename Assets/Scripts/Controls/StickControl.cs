@@ -5,6 +5,7 @@ namespace Assets.Scripts.Controls {
 	public class StickControl : MonoBehaviour {
 		public Vector2 Output { get; private set; }
 		private Vector2 SlowOutput;
+		public bool IsGrabbed { get; private set; }
 
 		public bool invertHor;
 		public bool invertVer = true;
@@ -19,6 +20,10 @@ namespace Assets.Scripts.Controls {
 
 			au = GetComponent<AudioSource> ();
 			auVolumeInitial = au.volume;
+
+			var eventWrapper = GetComponent<PointableUnityEventWrapper> ();
+			eventWrapper.WhenSelect.AddListener (() => SetIsGrabbed (true));
+			eventWrapper.WhenUnselect.AddListener (() => SetIsGrabbed (false));
 		}
 
 		void Update () {
@@ -31,6 +36,7 @@ namespace Assets.Scripts.Controls {
 				Output = new Vector2 (
 					(Input.GetKey (KeyCode.D) ? 1 : 0) - (Input.GetKey (KeyCode.A) ? 1 : 0),
 					(Input.GetKey (KeyCode.S) ? 1 : 0) - (Input.GetKey (KeyCode.W) ? 1 : 0));
+				IsGrabbed = Output != Vector2.zero;
 			}
 			if (invertHor || invertVer) {
 				Output = new Vector2 (
@@ -62,6 +68,20 @@ namespace Assets.Scripts.Controls {
 				if (plauSoundLoud) OVRInputWrapper.VibratePulseMed (1);
 				else OVRInputWrapper.VibratePulseLow (1);
 			}
+		}
+
+		public void SetIsGrabbed (bool isGrabbed) {
+			IsGrabbed = isGrabbed;
+		}
+
+		public Vector2 GetCombinedOutput () {
+			if (!FlightGearNetworking.Instance.PeerInput.StickIsGrabbed) {
+				return Output;
+			}
+			if (!IsGrabbed) {
+				return FlightGearNetworking.Instance.PeerInput.Stick;
+			}
+			return (Output + FlightGearNetworking.Instance.PeerInput.Stick) / 2f;
 		}
 	}
 }

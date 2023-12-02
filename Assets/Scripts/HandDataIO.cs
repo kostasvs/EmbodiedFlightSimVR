@@ -1,4 +1,5 @@
-﻿using Oculus.Interaction.Input;
+﻿using Assets.Scripts.Controls;
+using Oculus.Interaction.Input;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -15,10 +16,18 @@ namespace Assets.Scripts {
 		GameObject[] networkHandVisuals;
 		[SerializeField]
 		private Transform rig;
+		private FlightControls controls;
 
 		public const string header = "HandData";
 
 		private bool receivedFirstData;
+
+		private void Start () {
+			controls = FlightGearNetworking.Instance.Controls;
+			if (controls == null) {
+				Debug.LogWarning ("No controls defined");
+			}
+		}
 
 		public void Transmit (Socket socket, EndPoint targetEndPoint) {
 			if (socket == null || targetEndPoint == null) {
@@ -30,8 +39,8 @@ namespace Assets.Scripts {
 					writer.Write (header.ToCharArray ());
 					foreach (var dataSource in dataSourcesToSend) {
 						var data = dataSource.GetData ();
-						var rootPosition = transform.InverseTransformPoint (data.Root.position);
-						var rootRotation = Quaternion.Inverse (transform.rotation) * data.Root.rotation;
+						var rootPosition = data.Root.position;
+						var rootRotation = data.Root.rotation;
 
 						var status = (byte)(
 							(data.IsDataValid ? 1 : 0)
@@ -57,6 +66,15 @@ namespace Assets.Scripts {
 							writer.Write (jointRotation.w);
 						}
 					}
+
+					SerializedControlInputs.WriteTo (writer, new SerializedControlInputs.Input {
+						Stick = controls.Stick.Output,
+						StickIsGrabbed = controls.Stick.IsGrabbed,
+						Throttle = controls.Throttle.Output,
+						ThrottleIsGrabbed = controls.Throttle.IsGrabbed,
+						Rudder = controls.Rudder.Output,
+						Brake = controls.Brake.Output
+					});
 				}
 				socket.SendTo (stream.ToArray (), targetEndPoint);
 			}
@@ -110,13 +128,15 @@ namespace Assets.Scripts {
 						data.IsTracked = isTracked;
 						data.IsHighConfidence = isHighConfidence;
 						data.HandScale = scale;
-						data.Root.position = transform.TransformPoint (rootPosition - new Vector3 (0, rig.position.y, 0));
-						data.Root.rotation = transform.rotation * rootRotation;
+						data.Root.position = rootPosition;
+						data.Root.rotation = rootRotation;
 						for (int i = 0; i < joints.Length; i++) {
 							data.Joints[i] = joints[i];
 						}
 						dataSource.SetData (data);
 					}
+
+					FlightGearNetworking.Instance.UpdatePeerInput (SerializedControlInputs.ReadFrom (reader));
 
 					if (!receivedFirstData) {
 						receivedFirstData = true;

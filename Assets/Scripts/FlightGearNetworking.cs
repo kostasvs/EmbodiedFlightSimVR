@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts {
 	public class FlightGearNetworking : MonoBehaviour {
+		public static FlightGearNetworking Instance { get; private set; }
 
 		[SerializeField]
 		private ushort portToSend = 5500;
@@ -19,8 +20,8 @@ namespace Assets.Scripts {
 		[SerializeField]
 		private float sendHandsRate = 1f / 20f;
 
-		[SerializeField]
-		private bool isMaster = true;
+		private bool? isMaster;
+		public bool? IsMaster => isMaster;
 		private EndPoint peerEndpoint = null;
 
 		UdpClient listener;
@@ -35,11 +36,15 @@ namespace Assets.Scripts {
 		private int anyPacketsReceived = 0;
 		private const int minPacketsToStartSending = 10;
 		private bool hasReceivedValidData = false;
+		private bool hasReceivedBrokerHandshake = false;
 
 		[SerializeField]
 		private FlightControls controls;
+		public FlightControls Controls => controls;
+
 		[SerializeField]
 		private HandDataIO handDataIO;
+		public HandDataIO HandDataIO => handDataIO;
 
 		private GeoPositioning geo;
 
@@ -47,6 +52,14 @@ namespace Assets.Scripts {
 
 		public bool HasReceivedAnyData => packetsReceived > 0;
 		public bool HasReceivedValidData => hasReceivedValidData;
+
+		public SerializedControlInputs.Input PeerInput { get; private set; }
+		private float timerToResetPeerInput = 0f;
+		private const float resetPeerInputDelay = 1f;
+
+		private void Awake () {
+			Instance = this;
+		}
 
 		void Start () {
 			geo = GetComponent<GeoPositioning> ();
@@ -86,6 +99,12 @@ namespace Assets.Scripts {
 				handDataIO.Receive (receivedHandsData);
 				receivedHandsData = null;
 			}
+			if (timerToResetPeerInput > 0f) {
+				timerToResetPeerInput -= Time.deltaTime;
+				if (timerToResetPeerInput <= 0f) {
+					PeerInput = default;
+				}
+			}
 		}
 
 		private void Receive () {
@@ -105,13 +124,16 @@ namespace Assets.Scripts {
 						continue;
 					}
 
+					if (isMaster == null) continue;
+
 					var readout = Encoding.ASCII.GetString (bytes, 0, bytes.Length);
 					if (!string.IsNullOrEmpty (readout)) {
 						// check if this is a connection broker handshake message
 						if (readout == "connection_broker") {
 							// reply with master/slave message
-							byte[] sendbuf = Encoding.ASCII.GetBytes (isMaster ? "master" : "slave");
+							byte[] sendbuf = Encoding.ASCII.GetBytes (isMaster == true ? "master" : "slave");
 							socket.SendTo (sendbuf, new IPEndPoint (groupEP.Address, portToReplyBroker));
+							hasReceivedBrokerHandshake = true;
 							continue;
 						}
 
@@ -138,7 +160,7 @@ namespace Assets.Scripts {
 							Debug.Log ("Begin sending FlightGear outputs to " + targetEndpoint);
 
 							// read peer address (override port with portToReceive)
-							var peerAddrPort = isMaster ? clients?.slave : clients?.master;
+							var peerAddrPort = isMaster == true ? clients?.slave : clients?.master;
 							if (string.IsNullOrEmpty (peerAddrPort)) {
 								Debug.LogWarning ("No peer address received");
 								continue;
@@ -172,7 +194,7 @@ namespace Assets.Scripts {
 		}
 
 		private void SendOutputs () {
-			if (targetEndpoint == null || !hasReceivedValidData || packetsReceived < minPacketsToStartSending) return;
+			if (isMaster != true || targetEndpoint == null || !hasReceivedValidData || packetsReceived < minPacketsToStartSending) return;
 
 			string msg = FormulateMessage ();
 			byte[] sendbuf = Encoding.ASCII.GetBytes (msg);
@@ -227,17 +249,32 @@ namespace Assets.Scripts {
 		}
 
 		private string FormulateMessage () {
+			var stickCombined = controls.Stick.GetCombinedOutput ();
+			var brakeCombined = controls.Brake.GetCombinedOutput ();
 			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\t{5:0.00}\t{6:0.00}\t{7:0.00}\t{8:0.00}\n",
-				controls.Stick.Output.x,
-				controls.Stick.Output.y,
+				stickCombined.x,
+				stickCombined.y,
 				controls.Throttle.Output,
-				controls.Rudder.Output,
+				controls.Rudder.GetCombinedOutput (),
 				controls.GearDown ? 1 : 0,
 				0, // parking brake
-				controls.Brake.Output, // parking left
-				controls.Brake.Output, // parking right
+				brakeCombined, // parking left
+				brakeCombined, // parking right
 				0 // canopy (0 = fully closed, 1 = fully open)
-				);
+				); ;
+		}
+
+		public void SetIsMaster (bool? isMaster) {
+			if (hasReceivedBrokerHandshake) return;
+			this.isMaster = isMaster;
+		}
+
+		public void UpdatePeerInput (SerializedControlInputs.Input input) {
+			PeerInput = input;
+			timerToResetPeerInput = resetPeerInputDelay;
+			if (!controls.Throttle.IsGrabbed && (isMaster == false || input.ThrottleIsGrabbed)) {
+				controls.Throttle.SetOutput (input.Throttle);
+			}
 		}
 
 		private class Clients {

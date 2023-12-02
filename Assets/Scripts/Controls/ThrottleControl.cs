@@ -5,6 +5,7 @@ namespace Assets.Scripts.Controls {
 	public class ThrottleControl : MonoBehaviour {
 		public float Output { get; private set; }
 		private float SlowOutput;
+		public bool IsGrabbed { get; private set; }
 
 		private float maxZ;
 		private const float zThres = 0.001f;
@@ -19,6 +20,10 @@ namespace Assets.Scripts.Controls {
 
 			au = GetComponent<AudioSource> ();
 			auVolumeInitial = au.volume;
+
+			var eventWrapper = GetComponent<PointableUnityEventWrapper> ();
+			eventWrapper.WhenSelect.AddListener (() => SetIsGrabbed (true));
+			eventWrapper.WhenUnselect.AddListener (() => SetIsGrabbed (false));
 		}
 
 		void Update () {
@@ -26,7 +31,8 @@ namespace Assets.Scripts.Controls {
 
 			if (Application.isEditor) {
 				var dir = (Input.GetKey (KeyCode.UpArrow) ? 1f : 0f) + (Input.GetKey (KeyCode.DownArrow) ? -1f : 0f);
-				if (dir != 0f) Output = Mathf.Clamp01 (Output + dir * Time.deltaTime);
+				if (dir != 0f) SetOutput (Output + dir * Time.deltaTime);
+				IsGrabbed = dir != 0f;
 			}
 			else if (maxZ > 0) Output = Mathf.Clamp01 (transform.localPosition.z / maxZ);
 
@@ -45,6 +51,17 @@ namespace Assets.Scripts.Controls {
 				if (SlowOutput != Output) OVRInputWrapper.VibratePulseMed (0);
 				else OVRInputWrapper.VibratePulseLow (0);
 			}
+		}
+
+		public void SetIsGrabbed (bool isGrabbed) {
+			IsGrabbed = isGrabbed;
+		}
+
+		public void SetOutput (float output) {
+			Output = Mathf.Clamp01 (output);
+			var pos = transform.localPosition;
+			pos.z = output * maxZ;
+			transform.localPosition = pos;
 		}
 	}
 }
