@@ -156,6 +156,63 @@ namespace Assets.Scripts {
 				return;
 			}
 
+			// get interpolated result
+			Snapshot result = GetCurTimeSnapshot ();
+
+			// apply map zoom
+			var alt = (float)result.alt;
+			if (Mathf.Abs (lastZoomChangeAlt - alt) > minZoomChangeAltDelta) {
+				var zoom = GetZoomForAltitude (alt);
+				if (zoom > 0 && zoom != Mathf.RoundToInt (curMap.Zoom)) {
+					lastZoomChangeAlt = alt;
+					SwapMapToZoom (zoom, alt);
+				}
+			}
+
+			// apply map position
+			var horThres = horizontalRefreshThreshold + horizontalRefreshThresholdAltitudeFactor * Mathf.Max (0, alt);
+			var pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true) - mapParent.transform.position;
+			if (Mathf.Abs (pos.x) > horThres ||
+				Mathf.Abs (pos.z) > horThres) {
+
+				foreach (var map in maps) {
+					if (!map.enabled) continue;
+					map.UpdateMap (new Vector2d (result.lat, result.lon));
+					map.transform.localScale = mapInitScale;
+				}
+				pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true) - mapParent.transform.position;
+			}
+
+			// set position y to altitude with a minimum height above ground
+			var groundY = pos.y + minHeightAboveGround;
+			pos.y = Mathf.Max (alt, groundY);
+			var prevGrounded = isGrounded;
+			isGrounded = pos.y == groundY;
+			if (isGrounded && !prevGrounded) OVRInputWrapper.VibratePulseMed (-1);
+
+			// rotation
+			var rot = result.attitude;
+
+			// extrapolate if needed
+			var velocity = new Vector3 (result.ve, -result.vd, result.vn);
+			var spin = new Vector3 (-result.pitchRate, result.yawRate, -result.rollRate);
+			var dt = (float)(GetCurSimTime () - result.simTime);
+			pos += velocity * dt;
+			rot = Quaternion.Euler (spin * dt) * rot;
+
+			// limit max visualized altitude to prevent z-depth issues
+			pos.y = Mathf.Min (pos.y, maxMapAltitude);
+
+			// apply result rotation to aircraft
+			target.rotation = rot;
+
+			// apply reversed result position to map
+			// (normally we would move the aircraft and keep the map stationary,
+			// but the VR controls become unstable at high speeds)
+			mapParent.transform.position = -pos;
+		}
+
+		private Snapshot GetCurTimeSnapshot () {
 			// find nearest before/after snapshots
 			int nearestBefore = -1, nearestAfter = -1;
 			double timeBefore = 0, timeAfter = 0;
@@ -174,62 +231,10 @@ namespace Assets.Scripts {
 					}
 				}
 			}
-
 			// get interpolated result
-			Snapshot result;
-			if (nearestBefore == -1) result = snapshots[nearestAfter];
-			else if (nearestAfter == -1) result = snapshots[nearestBefore];
-			else result = Lerp (snapshots[nearestBefore], snapshots[nearestAfter], GetCurSimTime ());
-
-			// apply map zoom
-			var alt = (float)result.alt;
-			if (Mathf.Abs (lastZoomChangeAlt - alt) > minZoomChangeAltDelta) {
-				var zoom = GetZoomForAltitude (alt);
-				if (zoom > 0 && zoom != Mathf.RoundToInt (curMap.Zoom)) {
-					lastZoomChangeAlt = alt;
-					SwapMapToZoom (zoom, alt);
-				}
-			}
-
-			// apply map position
-			var horThres = horizontalRefreshThreshold + horizontalRefreshThresholdAltitudeFactor * Mathf.Max (0, alt);
-			var pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true);
-			if (Mathf.Abs (pos.x) > horThres ||
-				Mathf.Abs (pos.z) > horThres) {
-
-				foreach (var map in maps) {
-					if (!map.enabled) continue;
-					map.UpdateMap (new Vector2d (result.lat, result.lon));
-					map.transform.localScale = mapInitScale;
-				}
-				pos = curMap.GeoToWorldPosition (new Vector2d (result.lat, result.lon), true);
-			}
-
-			// set position y to altitude with a minimum height above ground
-			var groundY = pos.y - mapParent.transform.position.y + minHeightAboveGround;
-			pos.y = Mathf.Max (alt, groundY);
-			var prevGrounded = isGrounded;
-			isGrounded = pos.y == groundY;
-			if (isGrounded && !prevGrounded) OVRInputWrapper.VibratePulseMed (-1);
-
-			// rotation
-			var rot = result.attitude;
-
-			// extrapolate if needed
-			var velocity = new Vector3 (result.ve, -result.vd, result.vn);
-			var spin = new Vector3 (-result.pitchRate, result.yawRate, -result.rollRate);
-			var dt = (float)(GetCurSimTime () - result.simTime);
-			pos += velocity * dt;
-			rot = Quaternion.Euler (spin * dt) * rot;
-
-			// equally displace map/aircraft to simulate altitude (limit max displace to prevent z-depth issues)
-			var mapParentPos = mapParent.transform.position;
-			mapParentPos.y = -.5f * Mathf.Min (pos.y, maxMapAltitude);
-			pos.y = -mapParentPos.y;
-
-			// apply result position/rotation to aircraft
-			target.SetPositionAndRotation (pos, rot);
-			mapParent.transform.position = mapParentPos;
+			if (nearestBefore == -1) return snapshots[nearestAfter];
+			if (nearestAfter == -1) return snapshots[nearestBefore];
+			return Lerp (snapshots[nearestBefore], snapshots[nearestAfter], GetCurSimTime ());
 		}
 
 		private int GetZoomForAltitude (float altitude) {
