@@ -237,14 +237,19 @@ namespace Assets.Scripts {
 				float.TryParse (parts[26], out var weightOnWheels) &&
 				float.TryParse (parts[27], out var apTargetSpeed) &&
 				float.TryParse (parts[28], out var acceleration) &&
-				float.TryParse (parts[29], out var afterburner)) {
+				float.TryParse (parts[29], out var afterburner) &&
+				int.TryParse (parts[30], out var leftGear) &&
+				int.TryParse (parts[31], out var noseGear) &&
+				int.TryParse (parts[32], out var rightGear) &&
+				int.TryParse (parts[33], out var gearRed)) {
 
 				hasReceivedValidData = true;
 				var attitude = Quaternion.Euler (-pitch, yaw, -roll);
 				geo.AddSnapshot (new Snapshot (
 					lat, lon, altitude, vn, ve, vd, attitude, yawRate, pitchRate, rollRate, simTime,
 					magHeading, apHeading, displayHeading, alpha, beta, gLoad, airspeed, mach, groundSpeed, verticalSpeed,
-					indicatedAltitude, radarAltitude, gearPos, weightOnWheels > 0, apTargetSpeed, acceleration, afterburner));
+					indicatedAltitude, radarAltitude, gearPos, weightOnWheels > 0, apTargetSpeed, acceleration, afterburner,
+					leftGear > 0, noseGear > 0, rightGear > 0, gearRed > 0));
 			}
 		}
 

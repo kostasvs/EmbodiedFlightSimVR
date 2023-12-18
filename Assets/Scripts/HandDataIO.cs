@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Controls;
+using Assets.Scripts.Rpc;
 using Oculus.Interaction.Input;
 using System.Net;
 using System.Net.Sockets;
@@ -75,6 +76,8 @@ namespace Assets.Scripts {
 						Rudder = controls.Rudder.Output,
 						Brake = controls.Brake.Output
 					});
+
+					RpcPoll.WriteTo (writer);
 				}
 				socket.SendTo (stream.ToArray (), targetEndPoint);
 			}
@@ -137,6 +140,8 @@ namespace Assets.Scripts {
 					}
 
 					FlightGearNetworking.Instance.UpdatePeerInput (SerializedControlInputs.ReadFrom (reader));
+
+					RpcPoll.ReadFrom (reader);
 
 					if (!receivedFirstData) {
 						receivedFirstData = true;

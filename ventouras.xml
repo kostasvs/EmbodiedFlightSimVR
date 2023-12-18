@@ -230,6 +230,30 @@ Outbound connection to localhost is only needed for testing locally (i.e. in Uni
     <node>/engines/engine[0]/afterburner</node>
    </chunk>
 
+    <chunk>
+      <name>left gear</name>
+      <type>int</type>
+      <node>/instrumentation/gearBox/leftgear</node>
+    </chunk>
+
+    <chunk>
+      <name>nose gear</name>
+      <type>int</type>
+      <node>/instrumentation/gearBox/nozegear</node>
+    </chunk>
+
+    <chunk>
+      <name>right gear</name>
+      <type>int</type>
+      <node>/instrumentation/gearBox/rightgear</node>
+    </chunk>
+
+    <chunk>
+      <name>gear red</name>
+      <type>int</type>
+      <node>/instrumentation/gearBox/gearRed</node>
+    </chunk>
+
   </output>
 
   <input>

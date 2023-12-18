@@ -48,6 +48,9 @@ namespace Assets.Scripts {
 		private const float lastSnapshotMaxDelay = 1f;
 		private float lastSnapshotTime = -lastSnapshotMaxDelay;
 
+		private Snapshot curSnapshot;
+		public static Snapshot CurSnapshot => instance.curSnapshot;
+
 		private void Awake () {
 			instance = this;
 		}
@@ -74,6 +77,7 @@ namespace Assets.Scripts {
 		void Update () {
 			if (lastSnapshotTime < Time.time - lastSnapshotMaxDelay) return;
 
+			curSnapshot = GetCurSnapshotRealtime ();
 			ApplyTimeDataOnTransform (aircraftTransform);
 			if (secondaryMapHideTimer > 0) {
 				secondaryMapHideTimer -= Time.deltaTime;
@@ -132,7 +136,7 @@ namespace Assets.Scripts {
 			}
 		}
 
-		public static Snapshot GetCurSnapshot () {
+		private Snapshot GetCurSnapshotRealtime () {
 			if (!instance) return default;
 
 			var curTime = instance.GetCurSimTime ();
@@ -327,8 +331,12 @@ namespace Assets.Scripts {
 		public float apTargetSpeed;
 		public float acceleration;
 		public float afterburner;
+		public bool leftGear;
+		public bool noseGear;
+		public bool rightGear;
+		public bool gearRed;
 
-		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner) {
+		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed) {
 			this.lat = lat;
 			this.lon = lon;
 			this.alt = alt;
@@ -357,6 +365,10 @@ namespace Assets.Scripts {
 			this.apTargetSpeed = apTargetSpeed;
 			this.acceleration = acceleration;
 			this.afterburner = afterburner;
+			this.leftGear = leftGear;
+			this.noseGear = noseGear;
+			this.rightGear = rightGear;
+			this.gearRed = gearRed;
 		}
 	}
 }

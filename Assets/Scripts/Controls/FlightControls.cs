@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Rpc;
+using UnityEngine;
 
 namespace Assets.Scripts.Controls {
 	public class FlightControls : MonoBehaviour {
@@ -11,8 +12,6 @@ namespace Assets.Scripts.Controls {
 		RudderControl rudder;
 		[SerializeField]
 		BrakeControl brake;
-		[SerializeField]
-		GameObject[] gearDownLights;
 
 		private bool gearDown = true;
 
@@ -27,6 +26,7 @@ namespace Assets.Scripts.Controls {
 
 		void Start () {
 			SetGearDown (gearDown);
+			RpcPoll.OnMessageReceived.AddListener (OnMessageReceived);
 
 			if (Application.isEditor && cameraRig) cameraRig.localPosition += addCameraPosInEditor;
 		}
@@ -39,11 +39,21 @@ namespace Assets.Scripts.Controls {
 
 		public void SetGearDown (bool gearDown) {
 			this.gearDown = gearDown;
-			foreach (var light in gearDownLights) light.SetActive (gearDown);
 		}
 
 		public void ToggleGear () {
-			SetGearDown (!gearDown);
+			if (FlightGearNetworking.Instance.IsMaster == true) {
+				SetGearDown (!gearDown);
+			}
+			else if (FlightGearNetworking.Instance.IsMaster == false) {
+				RpcPoll.Send ((byte)RpcIds.FlightControls_ToggleGearDown);
+			}
+		}
+
+		private void OnMessageReceived (byte[] message) {
+			if (message[0] == (byte) RpcIds.FlightControls_ToggleGearDown) {
+				if (FlightGearNetworking.Instance.IsMaster == true) ToggleGear ();
+			}
 		}
 	}
 }

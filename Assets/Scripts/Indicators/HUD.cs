@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Controls;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Indicators {
@@ -45,6 +46,12 @@ namespace Assets.Scripts.Indicators {
 		private float vMarkerOffsetMax = 100f;
 
 		private void Start () {
+			if (!cameraTr) {
+				Debug.LogError ("No cameraTr defined");
+				enabled = false;
+				return;
+			}
+
 			aircraftTr = transform.root;
 
 			// apply hudColor to all Text and Image children
@@ -60,7 +67,6 @@ namespace Assets.Scripts.Indicators {
 		}
 
 		void Update () {
-			if (!cameraTr) return;
 			var camRelPos = uprightCopy.InverseTransformPoint (cameraTr.position);
 			camRelPos.z = 0f;
 			offsetParent.localPosition = camRelPos;
@@ -74,7 +80,7 @@ namespace Assets.Scripts.Indicators {
 			horizonLine.localRotation = Quaternion.Euler (0f, 0f, -roll);
 
 			// compass
-			var snapshot = GeoPositioning.GetCurSnapshot ();
+			var snapshot = GeoPositioning.CurSnapshot;
 			var rect = compassImage.uvRect;
 			rect.x = snapshot.magHeading / 360f - rect.width / 2f;
 			compassImage.uvRect = rect;
