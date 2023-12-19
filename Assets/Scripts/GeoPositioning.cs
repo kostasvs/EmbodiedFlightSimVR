@@ -30,6 +30,7 @@ namespace Assets.Scripts {
 			{ 400, 12 },
 			{ 2000, 10 },
 		};
+		const int baseZoomAfterTakeoff = 12;
 		private float lastZoomChangeAlt;
 		const int minZoomChangeAltDelta = 200;
 
@@ -168,6 +169,9 @@ namespace Assets.Scripts {
 			if (Mathf.Abs (lastZoomChangeAlt - alt) > minZoomChangeAltDelta) {
 				var zoom = GetZoomForAltitude (alt);
 				if (zoom > 0 && zoom != Mathf.RoundToInt (curMap.Zoom)) {
+					// prevent max zoom level from being reached again after takeoff (can cause trouble while landing)
+					if (lastZoomChangeAlt == 0) altitudeZooms[0] = baseZoomAfterTakeoff;
+
 					lastZoomChangeAlt = alt;
 					SwapMapToZoom (zoom, alt);
 				}
