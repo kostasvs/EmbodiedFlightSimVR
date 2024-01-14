@@ -2383,7 +2383,7 @@ MonoBehaviour:
   uprightCopy: {fileID: 1455914143}
   offsetParent: {fileID: 725746662}
   cameraTr: {fileID: 188315682086301352}
-  hudColor: {r: 0.9103774, g: 1, b: 0.9103774, a: 1}
+  hudColor: {r: 0.6462264, g: 1, b: 0.6462264, a: 1}
   horizonLine: {fileID: 1620778151}
   compassImage: {fileID: 150636308}
   airspeedText: {fileID: 216293821}
@@ -2482,7 +2482,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: -100
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1001 &363414237
 PrefabInstance:
@@ -6204,6 +6204,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2103658251640819248, guid: 628a596c9ef24a948bc5ef70ba64fc45, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 11fdd345b819d754598fdf443b73e86b, type: 2}
     - target: {fileID: -1773804111113412244, guid: 628a596c9ef24a948bc5ef70ba64fc45, type: 3}
       propertyPath: m_IsActive
       value: 0
