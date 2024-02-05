@@ -254,6 +254,34 @@ Outbound connection to localhost is only needed for testing locally (i.e. in Uni
       <node>/instrumentation/gearBox/gearRed</node>
     </chunk>
 
+   <chunk>
+	<name>n1 (%)</name>
+	<type>float</type>	
+	<format>%.1f</format>
+	<node>/engines/engine/n1s</node>
+   </chunk>
+
+   <chunk>
+	<name>internal remaining fuel (kg)</name>
+	<type>float</type>	
+	<format>%.1f</format>
+	<node>/systems/fuel/internal-remaining-fuel</node>
+   </chunk>
+
+   <chunk>
+	<name>total fuel (kg)</name>
+	<type>float</type>	
+	<format>%.1f</format>
+	<node>/consumables/fuel/total-fuel-kg</node>
+   </chunk>
+
+   <chunk>
+	<name>volts DC</name>
+	<type>float</type>	
+	<format>%.1f</format>
+	<node>/systems/electrical/volts</node>
+   </chunk>
+
   </output>
 
   <input>

@@ -339,8 +339,12 @@ namespace Assets.Scripts {
 		public bool noseGear;
 		public bool rightGear;
 		public bool gearRed;
+		public float n1;
+		public float fuelInternal;
+		public float fuelTotal;
+		public float voltsDC;
 
-		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed) {
+		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed, float n1, float fuelInternal, float fuelTotal, float voltsDC) {
 			this.lat = lat;
 			this.lon = lon;
 			this.alt = alt;
@@ -373,6 +377,10 @@ namespace Assets.Scripts {
 			this.noseGear = noseGear;
 			this.rightGear = rightGear;
 			this.gearRed = gearRed;
+			this.n1 = n1;
+			this.fuelInternal = fuelInternal;
+			this.fuelTotal = fuelTotal;
+			this.voltsDC = voltsDC;
 		}
 	}
 }
