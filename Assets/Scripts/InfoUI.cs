@@ -63,7 +63,8 @@ namespace Assets.Scripts {
 		private void Update () {
 			if (Application.isEditor) {
 				if (Input.GetKeyDown (KeyCode.Tab)) {
-					SetIsInstructor (FlightGearNetworking.Instance.IsMaster == false);
+					//SetIsInstructor (FlightGearNetworking.Instance.IsMaster == false);
+					SetIsInstructor (FlightGearNetworking.Instance.IsMaster != true);
 					Debug.Log (FlightGearNetworking.Instance.IsMaster == true ? "Instructor" : "Student");
 				}
 			}

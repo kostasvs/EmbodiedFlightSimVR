@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Controls;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Indicators {
