@@ -7514,6 +7514,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: carburant
       objectReference: {fileID: 0}
+    - target: {fileID: 1003338535161263161, guid: e5ecdabca8fafed409c74771c851bd65, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4945220000731603016, guid: e5ecdabca8fafed409c74771c851bd65, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5ecdabca8fafed409c74771c851bd65, type: 3}
 --- !u!1001 &1653988182

@@ -343,8 +343,9 @@ namespace Assets.Scripts {
 		public float fuelInternal;
 		public float fuelTotal;
 		public float voltsDC;
+		public float fuelBingo;
 
-		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed, float n1, float fuelInternal, float fuelTotal, float voltsDC) {
+		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed, float n1, float fuelInternal, float fuelTotal, float voltsDC, float fuelBingo) {
 			this.lat = lat;
 			this.lon = lon;
 			this.alt = alt;
@@ -381,6 +382,7 @@ namespace Assets.Scripts {
 			this.fuelInternal = fuelInternal;
 			this.fuelTotal = fuelTotal;
 			this.voltsDC = voltsDC;
+			this.fuelBingo = fuelBingo;
 		}
 	}
 }

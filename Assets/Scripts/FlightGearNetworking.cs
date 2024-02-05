@@ -245,7 +245,8 @@ namespace Assets.Scripts {
 				float.TryParse (parts[34], out var n1) &&
 				float.TryParse (parts[35], out var fuelInternal) &&
 				float.TryParse (parts[36], out var fuelTotal) &&
-				float.TryParse (parts[37], out var voltsDC)) {
+				float.TryParse (parts[37], out var voltsDC) &&
+				float.TryParse (parts[38], out var fuelBingo)) {
 
 				hasReceivedValidData = true;
 				var attitude = Quaternion.Euler (-pitch, yaw, -roll);
@@ -253,7 +254,7 @@ namespace Assets.Scripts {
 					lat, lon, altitude, vn, ve, vd, attitude, yawRate, pitchRate, rollRate, simTime,
 					magHeading, apHeading, displayHeading, alpha, beta, gLoad, airspeed, mach, groundSpeed, verticalSpeed,
 					indicatedAltitude, radarAltitude, gearPos, weightOnWheels > 0, apTargetSpeed, acceleration, afterburner,
-					leftGear > 0, noseGear > 0, rightGear > 0, gearRed > 0, n1, fuelInternal, fuelTotal, voltsDC));
+					leftGear > 0, noseGear > 0, rightGear > 0, gearRed > 0, n1, fuelInternal, fuelTotal, voltsDC, fuelBingo));
 			}
 		}
 

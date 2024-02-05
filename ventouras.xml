@@ -258,7 +258,7 @@ Outbound connection to localhost is only needed for testing locally (i.e. in Uni
 	<name>n1 (%)</name>
 	<type>float</type>	
 	<format>%.1f</format>
-	<node>/engines/engine/n1s</node>
+	<node>/engines/engine/n1</node>
    </chunk>
 
    <chunk>
@@ -280,6 +280,13 @@ Outbound connection to localhost is only needed for testing locally (i.e. in Uni
 	<type>float</type>	
 	<format>%.1f</format>
 	<node>/systems/electrical/volts</node>
+   </chunk>
+
+   <chunk>
+	<name>bingo fuel (kg)</name>
+	<type>float</type>	
+	<format>%.1f</format>
+	<node>/instrumentation/consumables/bingo_fuel</node>
    </chunk>
 
   </output>
