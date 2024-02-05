@@ -44,9 +44,10 @@ namespace Assets.Scripts.Indicators {
 			// altitude
 			altitudeText.text = (snapshot.alt * HUD.METERS_TO_FEET).ToString ("0");
 
-			// aoa
+			// aoa (non-linear)
+			var aoa = Mathf.Clamp (snapshot.alpha, 0, 35);
 			var scale = aoaRibbon.localScale;
-			scale.y = Mathf.Clamp01 (snapshot.alpha / 35f);
+			scale.y = aoa < 15 ? aoa / 15f : 1f + (aoa - 15f) / 45f;
 			aoaRibbon.localScale = scale;
 
 			// vspeed
