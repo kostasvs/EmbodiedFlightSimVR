@@ -44,6 +44,9 @@ namespace Assets.Scripts.Indicators {
 		[SerializeField]
 		private float vMarkerOffsetMax = 100f;
 
+		[SerializeField]
+		private Transform ehsiCompass;
+
 		private void Start () {
 			if (!cameraTr) {
 				Debug.LogError ("No cameraTr defined");
@@ -120,6 +123,9 @@ namespace Assets.Scripts.Indicators {
 			var vMarkersPos = vMarkers.anchoredPosition;
 			vMarkersPos.y = Mathf.Clamp (snapshot.acceleration * vMarkerOffsetFactor, -vMarkerOffsetMax, vMarkerOffsetMax);
 			vMarkers.anchoredPosition = vMarkersPos;
+
+			// non-HUD instruments
+			if (ehsiCompass) ehsiCompass.localEulerAngles = new Vector3 (snapshot.magHeading, 0, 0);
 		}
 
 		private static float Angle180 (float angle) {
