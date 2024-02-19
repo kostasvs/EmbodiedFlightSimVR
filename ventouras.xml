@@ -8,6 +8,7 @@ Usage:
 fgfs --aircraft=m2000-5 --timeofday=morning --generic=socket,in,25,,5500,udp,ventouras --generic=socket,out,25,localhost,5501,udp,ventouras  --generic=socket,out,25,YOUR_OCULUS_IP_HERE,5501,udp,ventouras
 Replace YOUR_OCULUS_IP_HERE with IP address of Oculus (displayed when project app starts)
 Outbound connection to localhost is only needed for testing locally (i.e. in Unity editor)
+Outbound connection to Oculus is not needed if you use the connection_broker.py script
 ]]>
 </comment>
 <generic>
