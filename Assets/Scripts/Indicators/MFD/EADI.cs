@@ -20,6 +20,8 @@ namespace Assets.Scripts.Indicators {
 		private Text vertSpeedTextUp;
 		[SerializeField]
 		private Text vertSpeedTextDown;
+		[SerializeField]
+		private Text headingText;
 
 		[SerializeField]
 		private MeshRenderer ascendArrow;
@@ -40,7 +42,7 @@ namespace Assets.Scripts.Indicators {
 
 			// speeds
 			airspeedText.text = snapshot.airspeed.ToString ("0");
-			machText.text = "M " + snapshot.mach.ToString ("0.00");
+			machText.text = snapshot.mach.ToString ("0.00");
 			groundSpeedText.text = "Gspd " + snapshot.groundSpeed.ToString ("0");
 
 			// vertical speed
@@ -54,7 +56,10 @@ namespace Assets.Scripts.Indicators {
 			// altitude
 			altitudeText.text = (snapshot.alt * METERS_TO_FEET).ToString ("0");
 
-			// non-HUD instruments
+			// heading
+			headingText.text = snapshot.magHeading.ToString ("0");
+
+			// attitude
 			var attitude = aircraftTr.eulerAngles;
 			var roll = Angle180 (attitude.z);
 			eadiSphere.localEulerAngles = new Vector3 (-attitude.x, 0, -attitude.z);
