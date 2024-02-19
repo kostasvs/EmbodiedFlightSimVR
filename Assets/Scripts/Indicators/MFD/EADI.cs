@@ -29,8 +29,6 @@ namespace Assets.Scripts.Indicators {
 		private MeshRenderer descendArrow;
 
 		[SerializeField]
-		private Transform eadiSphere;
-		[SerializeField]
 		private Transform eadiRollIndex;
 
 		private void Start () {
@@ -62,7 +60,6 @@ namespace Assets.Scripts.Indicators {
 			// attitude
 			var attitude = aircraftTr.eulerAngles;
 			var roll = Angle180 (attitude.z);
-			eadiSphere.localEulerAngles = new Vector3 (-attitude.x, 0, -attitude.z);
 			eadiRollIndex.localEulerAngles = new Vector3 (-roll, 0, 0);
 		}
 

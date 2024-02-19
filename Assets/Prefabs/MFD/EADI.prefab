@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 8358652}
   - component: {fileID: 8358651}
   m_Layer: 9
-  m_Name: alt
+  m_Name: alt2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8358650
 RectTransform:
   m_ObjectHideFlags: 0
@@ -304,7 +304,6 @@ MonoBehaviour:
   headingText: {fileID: 1977305489}
   ascendArrow: {fileID: 3296656070117028243}
   descendArrow: {fileID: 6309653507519198905}
-  eadiSphere: {fileID: 0}
   eadiRollIndex: {fileID: 1277460026530993684}
 --- !u!1 &829977851
 GameObject:

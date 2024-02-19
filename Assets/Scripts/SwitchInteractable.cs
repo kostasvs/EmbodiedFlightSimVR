@@ -23,7 +23,7 @@ namespace Assets.Scripts {
 			Left,
 			Right
 		}
-		public UnityEvent<SwitchDirection> OnSwitchActuate = new UnityEvent<SwitchDirection> ();
+		public UnityEvent<SwitchInteractable, SwitchDirection> OnSwitchActuate = new UnityEvent<SwitchInteractable, SwitchDirection> ();
 
 		void Start () {
 			pokeInteractable = GetComponent<PokeInteractable> ();
@@ -50,18 +50,18 @@ namespace Assets.Scripts {
 				var delta = transform.InverseTransformPointUnscaled (jointPose.position);
 				if (actuateHorizontal && Mathf.Abs (delta.x) > Mathf.Max (Mathf.Abs (delta.y), -delta.z)) {
 					if (delta.x > 0) {
-						OnSwitchActuate.Invoke (SwitchDirection.Right);
+						OnSwitchActuate.Invoke (this, SwitchDirection.Right);
 					}
 					else {
-						OnSwitchActuate.Invoke (SwitchDirection.Left);
+						OnSwitchActuate.Invoke (this, SwitchDirection.Left);
 					}
 				}
 				else if (actuateVertical && Mathf.Abs (delta.y) > Mathf.Max (Mathf.Abs (delta.x), -delta.z)) {
 					if (delta.y > 0) {
-						OnSwitchActuate.Invoke (SwitchDirection.Up);
+						OnSwitchActuate.Invoke (this, SwitchDirection.Up);
 					}
 					else {
-						OnSwitchActuate.Invoke (SwitchDirection.Down);
+						OnSwitchActuate.Invoke (this, SwitchDirection.Down);
 					}
 				}
 			}
