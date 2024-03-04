@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Assets.Scripts {
 	public class FlightGearNetworking : MonoBehaviour {
@@ -57,6 +58,11 @@ namespace Assets.Scripts {
 		private float timerToResetPeerInput = 0f;
 		private const float resetPeerInputDelay = 1f;
 
+		public UnityEvent OnConnectionReady = new UnityEvent ();
+		private bool isConnectionReady = false;
+		public static bool IsConnectionReady => Instance.isConnectionReady;
+		private bool triggerConnectionReady = false;
+
 		private void Awake () {
 			Instance = this;
 		}
@@ -104,6 +110,10 @@ namespace Assets.Scripts {
 				if (timerToResetPeerInput <= 0f) {
 					PeerInput = default;
 				}
+			}
+			if (triggerConnectionReady) {
+				triggerConnectionReady = false;
+				OnConnectionReady.Invoke ();
 			}
 		}
 
@@ -158,6 +168,8 @@ namespace Assets.Scripts {
 							}
 							targetEndpoint = new IPEndPoint (flightGearAddress, portToSend);
 							Debug.Log ("Begin sending FlightGear outputs to " + targetEndpoint);
+							if (!isConnectionReady) triggerConnectionReady = true;
+							isConnectionReady = true;
 
 							// read peer address (override port with portToReceive)
 							var peerAddrPort = isMaster == true ? clients?.slave : clients?.master;
@@ -184,6 +196,8 @@ namespace Assets.Scripts {
 							var lastReceivedAddress = groupEP.Address;
 							targetEndpoint = new IPEndPoint (lastReceivedAddress, portToSend);
 							Debug.LogWarning ("Begin sending FlightGear outputs to " + targetEndpoint);
+							isConnectionReady = true;
+							triggerConnectionReady = true;
 						}
 					}
 				}

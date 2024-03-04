@@ -7057,7 +7057,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1438875814, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
       propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1438875814, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
       propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -7174,6 +7174,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3666093704642933930, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
   m_PrefabInstance: {fileID: 1446914690}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1446914692 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3666093704642933931, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
+  m_PrefabInstance: {fileID: 1446914690}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1446914693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446914692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b96a841e225f4f40b2a4813eb5ad643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 139388273}
+        m_TargetAssemblyTypeName: Assets.Scripts.Indicators.MFD, Assembly-CSharp
+        m_MethodName: CycleThroughMenus
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 10,0
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1455914142
 GameObject:
   m_ObjectHideFlags: 0
@@ -7384,6 +7416,9 @@ MonoBehaviour:
   anyPacketsReceived: 0
   controls: {fileID: 479471260}
   handDataIO: {fileID: 479471263}
+  OnConnectionReady:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1499567966
 Transform:
   m_ObjectHideFlags: 0
@@ -9147,7 +9182,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1438875814, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
       propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1438875814, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
       propertyPath: _whenSelect.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -9264,6 +9299,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3666093704642933930, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
   m_PrefabInstance: {fileID: 1814896697}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1814896699 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3666093704642933931, guid: 9f717ba020826834a98daf42c0d358da, type: 3}
+  m_PrefabInstance: {fileID: 1814896697}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1814896700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814896699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b96a841e225f4f40b2a4813eb5ad643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 139388273}
+        m_TargetAssemblyTypeName: Assets.Scripts.Indicators.MFD, Assembly-CSharp
+        m_MethodName: CycleThroughMenus
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 7,0
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1845416096
 GameObject:
   m_ObjectHideFlags: 0

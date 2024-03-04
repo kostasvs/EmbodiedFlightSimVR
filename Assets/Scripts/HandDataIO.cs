@@ -28,6 +28,7 @@ namespace Assets.Scripts {
 			if (controls == null) {
 				Debug.LogWarning ("No controls defined");
 			}
+			SyncedInteractablesHandler.SetupSyncs (transform);
 		}
 
 		public void Transmit (Socket socket, EndPoint targetEndPoint) {

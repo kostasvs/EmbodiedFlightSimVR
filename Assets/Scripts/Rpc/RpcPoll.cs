@@ -62,6 +62,7 @@ namespace Assets.Scripts.Rpc {
 			if (instance.acks.Contains (message.Key)) return;
 			instance.acks.Add (message.Key);
 			instance.onMessageReceived.Invoke (message.Value);
+			SyncedInteractablesHandler.HandleMessageReceived (message.Value);
 		}
 
 		private void HandleAckReceived (short messageId) {

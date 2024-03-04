@@ -26,9 +26,21 @@ namespace Assets.Scripts.Indicators {
 			// get all child menus
 			childMenus = new Transform[Mathf.Max (0, transform.childCount - childMenusFirstIndex)];
 			for (int i = childMenusFirstIndex; i < transform.childCount; i++) {
-				childMenus[i - childMenusFirstIndex] = transform.GetChild(i);
+				childMenus[i - childMenusFirstIndex] = transform.GetChild (i);
 			}
-			SelectMenu(initialMenu);
+		}
+
+		private void Start () {
+			// enable screens only when connection is ready
+			if (FlightGearNetworking.IsConnectionReady) {
+				SelectMenu (initialMenu);
+			}
+			else {
+				SelectMenu (-1);
+				FlightGearNetworking.Instance.OnConnectionReady.AddListener (() => {
+					SelectMenu (initialMenu);
+				});
+			}
 		}
 
 		public void SelectMenu (int index) {
@@ -37,7 +49,7 @@ namespace Assets.Scripts.Indicators {
 				if (menuLabels[i]) menuLabels[i].color = i == index ? selectedColor : deselectedColor;
 			}
 			for (int i = 0; i < childMenus.Length; i++) {
-				childMenus[i].gameObject.SetActive(i == index);
+				childMenus[i].gameObject.SetActive (i == index);
 			}
 		}
 
