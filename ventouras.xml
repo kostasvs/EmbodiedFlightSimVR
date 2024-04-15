@@ -290,6 +290,12 @@ Outbound connection to Oculus is not needed if you use the connection_broker.py 
 	<node>/instrumentation/consumables/bingo_fuel</node>
    </chunk>
 
+   <chunk>
+	<name>local time (string)</name>
+	<type>string</type>	
+	<node>/sim/time/local-time-string</node>
+   </chunk>
+
   </output>
 
   <input>

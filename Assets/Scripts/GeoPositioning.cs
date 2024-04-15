@@ -218,6 +218,10 @@ namespace Assets.Scripts {
 			// (normally we would move the aircraft and keep the map stationary,
 			// but the VR controls become unstable at high speeds)
 			mapParent.transform.position = -pos;
+
+			// set sun angle by time and location
+			DateTimeSunAngle.SetLocation ((float)result.lon, (float)result.lat);
+			DateTimeSunAngle.SetTime (result.localTime);
 		}
 
 		private Snapshot GetCurTimeSnapshot () {
@@ -344,8 +348,9 @@ namespace Assets.Scripts {
 		public float fuelTotal;
 		public float voltsDC;
 		public float fuelBingo;
+		public System.TimeSpan localTime;
 
-		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed, float n1, float fuelInternal, float fuelTotal, float voltsDC, float fuelBingo) {
+		public Snapshot (double lat, double lon, double alt, float vn, float ve, float vd, Quaternion attitude, float yawRate, float pitchRate, float rollRate, double simTime, float magHeading, float apHeading, float displayHeading, float alpha, float beta, float gLoad, float airspeed, float mach, float groundSpeed, float verticalSpeed, float indicatedAltitude, float radarAltitude, float gearPos, bool weightOnWheels, float apTargetSpeed, float acceleration, float afterburner, bool leftGear, bool noseGear, bool rightGear, bool gearRed, float n1, float fuelInternal, float fuelTotal, float voltsDC, float fuelBingo, System.TimeSpan localTime) {
 			this.lat = lat;
 			this.lon = lon;
 			this.alt = alt;
@@ -383,6 +388,7 @@ namespace Assets.Scripts {
 			this.fuelTotal = fuelTotal;
 			this.voltsDC = voltsDC;
 			this.fuelBingo = fuelBingo;
+			this.localTime = localTime;
 		}
 	}
 }
