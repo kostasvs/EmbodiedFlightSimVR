@@ -10,9 +10,11 @@ public class DateTimeSunAngle : MonoBehaviour {
 	float latitude;
 
 	TimeSpan timespan;
+	Light sunlight;
 
 	private void Awake () {
 		instance = this;
+		sunlight = GetComponent<Light> ();
 	}
 
 	public static void SetLocation (float longitude, float latitude) {
@@ -31,6 +33,7 @@ public class DateTimeSunAngle : MonoBehaviour {
 		angles.x = (float)alt * Mathf.Rad2Deg;
 		angles.y = (float)azi * Mathf.Rad2Deg;
 		transform.localRotation = Quaternion.Euler (angles);
+		sunlight.intensity = Mathf.InverseLerp (-12, 0, angles.x);
 	}
 }
 

@@ -263,7 +263,6 @@ namespace Assets.Scripts {
 				float.TryParse (parts[38], out var fuelBingo)) {
 
 				var localTimeString = parts[39]; // hh:mm:ss
-				Debug.Log (localTimeString);
                 System.TimeSpan	timeOfDay = System.TimeSpan.Parse(localTimeString);
 
                 hasReceivedValidData = true;
