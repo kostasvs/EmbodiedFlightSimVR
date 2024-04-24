@@ -293,6 +293,7 @@ Outbound connection to Oculus is not needed if you use the connection_broker.py 
    <chunk>
 	<name>local time (string)</name>
 	<type>string</type>	
+	<format>%s</format>
 	<node>/sim/time/local-time-string</node>
    </chunk>
 
@@ -362,6 +363,20 @@ Outbound connection to Oculus is not needed if you use the connection_broker.py 
       <type>float</type>
       <format>%.2f</format>
       <node>/sim/model/door-positions/crew/position-norm</node>
+    </chunk>
+
+    <chunk>
+      <name>sim speed-up</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/sim/speed-up</node>
+    </chunk>
+
+    <chunk>
+      <name>time warp</name>
+      <type>float</type>
+      <format>%.2f</format>
+      <node>/sim/time/warp-delta</node>
     </chunk>
 
   </input>

@@ -63,6 +63,11 @@ namespace Assets.Scripts {
 		public static bool IsConnectionReady => Instance.isConnectionReady;
 		private bool triggerConnectionReady = false;
 
+		private float simSpeed = 1f;
+		public static float SimSpeed => Instance.simSpeed;
+		private float timeWarp = 0f;
+		public static float TimeWarp => Instance.timeWarp;
+
 		private void Awake () {
 			Instance = this;
 		}
@@ -279,7 +284,7 @@ namespace Assets.Scripts {
 		private string FormulateMessage () {
 			var stickCombined = controls.Stick.GetCombinedOutput ();
 			var brakeCombined = controls.Brake.GetCombinedOutput ();
-			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\t{5:0.00}\t{6:0.00}\t{7:0.00}\t{8:0.00}\n",
+			return string.Format ("{0:0.000}\t{1:0.000}\t{2:0.000}\t{3:0.000}\t{4}\t{5:0.00}\t{6:0.00}\t{7:0.00}\t{8:0.00}\t{9:0.00}\t{10:0.00}\n",
 				stickCombined.x,
 				stickCombined.y,
 				controls.Throttle.Output,
@@ -288,8 +293,10 @@ namespace Assets.Scripts {
 				0, // parking brake
 				brakeCombined, // parking left
 				brakeCombined, // parking right
-				0 // canopy (0 = fully closed, 1 = fully open)
-				); ;
+				0, // canopy (0 = fully closed, 1 = fully open)
+				simSpeed,
+				timeWarp
+				);
 		}
 
 		public void SetIsMaster (bool? isMaster) {
@@ -303,6 +310,16 @@ namespace Assets.Scripts {
 			if (!controls.Throttle.IsGrabbed && (isMaster == false || input.ThrottleIsGrabbed)) {
 				controls.Throttle.SetOutput (input.Throttle);
 			}
+		}
+
+		public static void SetSimSpeed (float simSpeed) {
+			if (!Instance) return;
+			Instance.simSpeed = Mathf.Clamp (simSpeed, 0f, 10f);
+		}
+
+		public static void SetTimeWarp (float timeWarp) {
+			if (!Instance) return;
+			Instance.timeWarp = timeWarp;
 		}
 
 		private class Clients {
