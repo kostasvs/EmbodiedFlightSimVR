@@ -5567,6 +5567,27 @@ RectTransform:
   m_AnchoredPosition: {x: 195, y: -72.5}
   m_SizeDelta: {x: 360, y: 120}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &761727958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 330823830f911fa4189590958279acfc, type: 3}
+  m_PrefabInstance: {fileID: 1577073656}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &761727960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761727958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e30be698deff8148838c81fe07387e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hourHand: {fileID: 1485811504}
+  minuteHand: {fileID: 1816122342}
+  secondHand: {fileID: 1582795407}
+  maxRotation: {x: -360, y: 0, z: 0}
 --- !u!1001 &770447063
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5689,6 +5710,7 @@ MonoBehaviour:
   disappearDistance: 0.4
   timeText: {fileID: 1484643467}
   timeWarpSpeed: 5000
+  timeWarpHourStep: 4
   hourglass: {fileID: 1512841256}
   hourglassRotSpeed: 0.6
   speedText: {fileID: 223446498}
@@ -8946,6 +8968,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1484643465}
   m_CullTransparentMesh: 1
+--- !u!4 &1485811504 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3192805017250985494, guid: 330823830f911fa4189590958279acfc, type: 3}
+  m_PrefabInstance: {fileID: 1577073656}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1499567964
 GameObject:
   m_ObjectHideFlags: 0
@@ -9720,16 +9747,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3206092112294254575, guid: 330823830f911fa4189590958279acfc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 330823830f911fa4189590958279acfc, type: 3}
       propertyPath: m_Name
       value: clock
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 330823830f911fa4189590958279acfc, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 330823830f911fa4189590958279acfc, type: 3}
+--- !u!4 &1582795407 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2869418893113636218, guid: 330823830f911fa4189590958279acfc, type: 3}
+  m_PrefabInstance: {fileID: 1577073656}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1586441120 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8553364197529364881, guid: 885ecae56b16f13428a67de5ae482a72, type: 3}
@@ -11137,6 +11173,11 @@ MonoBehaviour:
           m_StringArgument: 7,0
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!4 &1816122342 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -5646098254729782011, guid: 330823830f911fa4189590958279acfc, type: 3}
+  m_PrefabInstance: {fileID: 1577073656}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1845416096
 GameObject:
   m_ObjectHideFlags: 0
