@@ -10,6 +10,9 @@ namespace Assets.Scripts.Controls {
 		private float maxZ;
 		private const float zThres = 0.001f;
 
+		[SerializeField]
+		private ThrottleControlGhost ghost;
+
 		private AudioSource au;
 		private float auVolumeInitial;
 
@@ -51,6 +54,13 @@ namespace Assets.Scripts.Controls {
 				if (SlowOutput != Output) OVRInputWrapper.VibratePulseMed (0);
 				else OVRInputWrapper.VibratePulseLow (0);
 			}
+
+			bool showGhost = FlightGearNetworking.Instance.PeerInput.ThrottleIsGrabbed;
+			if (showGhost) {
+				var diff = Mathf.Abs (Output - FlightGearNetworking.Instance.PeerInput.Throttle);
+				showGhost = diff > .1f;
+			}
+			ghost.UpdateGhost (showGhost, FlightGearNetworking.Instance.PeerInput.Throttle);
 		}
 
 		public void SetIsGrabbed (bool isGrabbed) {

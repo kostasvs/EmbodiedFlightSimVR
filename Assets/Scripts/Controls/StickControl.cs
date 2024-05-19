@@ -12,6 +12,9 @@ namespace Assets.Scripts.Controls {
 
 		private OneGrabJoystickTransformer transformer;
 
+		[SerializeField]
+		private StickControlGhost ghost;
+
 		private AudioSource au;
 		private float auVolumeInitial;
 
@@ -68,6 +71,13 @@ namespace Assets.Scripts.Controls {
 				if (plauSoundLoud) OVRInputWrapper.VibratePulseMed (1);
 				else OVRInputWrapper.VibratePulseLow (1);
 			}
+
+			bool showGhost = FlightGearNetworking.Instance.PeerInput.StickIsGrabbed;
+			if (showGhost) {
+				var distSq = (Output - FlightGearNetworking.Instance.PeerInput.Stick).sqrMagnitude;
+				showGhost = distSq > .01f;
+			}
+			ghost.UpdateGhost (showGhost, FlightGearNetworking.Instance.PeerInput.Stick);
 		}
 
 		public void SetIsGrabbed (bool isGrabbed) {
