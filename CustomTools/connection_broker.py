@@ -16,6 +16,7 @@ def main():
     flightgear_cmd = ["C:/Program Files/FlightGear 2020.3/bin/fgfs.exe",
                       "--aircraft=m2000-5",
                       "--timeofday=morning",
+                      "--airport=LGTG",
                       "--generic=socket,in,25,,5500,udp,ventouras"]
     # Argument to append to the above flightgear_cmd before running.
     # Will be appended once for each app that responded,
