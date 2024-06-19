@@ -4,6 +4,7 @@
 
 ### Usage notes
 Tested with FlightGear 2020.3 and [Mirage 2000-5](https://wiki.flightgear.org/Dassault_Mirage_2000-5)
+- Make sure to add your MapBox API key in [MapboxConfiguration.txt](/Assets/Resources/Mapbox/MapboxConfiguration.txt)
 - Minimum 1 and maximum 2 users are required (in case of only 1 user, should be an Instructor)
 - Normally both users should run the app on Quest 2 headsets, but one of them can run it in the Unity Editor instead
 - Upon starting the app, each user must first choose a role (Instructor or Student):
