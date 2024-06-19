@@ -21,14 +21,14 @@ namespace Assets.Scripts {
 		private const float horizontalRefreshThreshold = 500;
 		private const float horizontalRefreshThresholdAltitudeFactor = 1f;
 
-		private const float maxMapAltitude = 4000;
+		//private const float maxMapAltitude = 4000;
 		private const float minHeightAboveGround = 2;
 		private bool isGrounded = true;
 
 		private readonly Dictionary<float, int> altitudeZooms = new Dictionary<float, int> () {
 			{ 0, 15 },
 			{ 400, 12 },
-			{ 2000, 10 },
+			{ 3000, 10 },
 		};
 		const int baseZoomAfterTakeoff = 12;
 		private float lastZoomChangeAlt;
@@ -209,7 +209,7 @@ namespace Assets.Scripts {
 			rot = Quaternion.Euler (spin * dt) * rot;
 
 			// limit max visualized altitude to prevent z-depth issues
-			pos.y = Mathf.Min (pos.y, maxMapAltitude);
+			//pos.y = Mathf.Min (pos.y, maxMapAltitude);
 
 			// apply result rotation to aircraft
 			target.rotation = rot;
